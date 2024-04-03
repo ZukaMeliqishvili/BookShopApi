@@ -1,4 +1,4 @@
-﻿namespace BookShopApi.Dto
+﻿namespace BookShopApi.Dto._Category
 {
     public class CategoryDto
     {

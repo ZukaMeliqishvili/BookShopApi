@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookShopApi.Repository
 {
-    public class CategoryRepository:IcategoryRepository
+    public class CategoryRepository:ICategoryRepository
     {
         private readonly BookShopContext _context;
 
@@ -32,6 +32,14 @@ namespace BookShopApi.Repository
         public async Task<Category> GetById(int id)
         {
            return await _context.Categories.FirstOrDefaultAsync(x=>x.Id==id);
+        }
+        public async Task<List<Category>> GetCategoriesByBookId(int id)
+        {
+            var categories = await _context.BookCategories
+           .Where(bc => bc.BookId == id)
+           .Select(bc => bc.Category)
+           .ToListAsync();
+            return categories;
         }
     }
 }

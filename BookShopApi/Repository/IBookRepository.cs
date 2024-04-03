@@ -1,5 +1,4 @@
 ﻿using BookShopApi.Entities;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace BookShopApi.Repository
 {
@@ -10,5 +9,7 @@ namespace BookShopApi.Repository
         public Task insert(Book book);
         public Task update(Book book);
         public Task deleteById(int id);
+        public Task AddBookCategories(BookCategories bookCateogories);
+        Task SaveChangesAsync();
     }
 }

@@ -1,14 +1,14 @@
-﻿using BookShopApi.Dto;
+﻿using BookShopApi.Dto._Category;
 using BookShopApi.Entities;
 using BookShopApi.Repository;
 using Mapster;
 
-namespace BookShopApi.Services
+namespace BookShopApi.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IcategoryRepository _categoryRepository;
-        public CategoryService(IcategoryRepository categoryRepository)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryService(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
@@ -16,26 +16,27 @@ namespace BookShopApi.Services
         public async Task Delete(int id)
         {
             var category = await _categoryRepository.GetById(id);
-            if(category == null)
+            if (category == null)
             {
                 throw new Exception("No category found by given id");
             }
             await _categoryRepository.Delete(category);
         }
 
-        public async Task<IEnumerable<Category>> GetAll()
+        public async Task<IEnumerable<CategoryGetDto>> GetAll()
         {
-            return await _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAll();
+            return categories.Adapt<IEnumerable<CategoryGetDto>>();
         }
 
-        public async Task<Category> GetById(int id)
+        public async Task<CategoryGetDto> GetById(int id)
         {
             var category = await _categoryRepository.GetById(id);
-            if(category == null)
+            if (category == null)
             {
                 throw new Exception("No category found by given id");
             }
-            return category;
+            return category.Adapt<CategoryGetDto>();
         }
 
         public async Task insert(CategoryDto categoryDto)

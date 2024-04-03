@@ -12,6 +12,7 @@ namespace BookShopApi.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<BookCategories> BookCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(x =>x.Id);
@@ -30,8 +31,10 @@ namespace BookShopApi.Entities
             modelBuilder.Entity<Book>().Property(x => x.Title).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<Book>().Property(x=>x.Description).IsRequired().HasMaxLength(2000);
             modelBuilder.Entity<Book>().Property(x => x.Title).IsRequired().HasMaxLength(255);
-            modelBuilder.Entity<Book>().HasMany(x=>x.Categories).WithMany(x=>x.Books);
             modelBuilder.Entity<Book>().Property(x => x.Price).IsRequired();
+            modelBuilder.Entity<BookCategories>().HasKey(x => x.Id);
+            modelBuilder.Entity<BookCategories>().HasOne(x => x.Book).WithMany(x => x.Categories).HasForeignKey(x => x.BookId);
+            modelBuilder.Entity<BookCategories>().HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId);
         }
     }
 }

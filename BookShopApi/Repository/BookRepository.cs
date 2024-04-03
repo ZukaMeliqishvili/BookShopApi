@@ -11,6 +11,12 @@ namespace BookShopApi.Repository
         {
             _context = context;
         }
+
+        public async Task AddBookCategories(BookCategories bookCateogories)
+        {
+            await _context.BookCategories.AddAsync(bookCateogories);
+        }
+
         public async Task deleteById(int id)
         {
             var book = await _context.Books.FirstOrDefaultAsync(x=> x.Id == id);
@@ -36,12 +42,15 @@ namespace BookShopApi.Repository
         public async Task insert(Book book)
         {
             await _context.Books.AddAsync(book);
-            await _context.SaveChangesAsync();
         }
 
         public async Task update(Book book)
         {
             _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+        }
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }
