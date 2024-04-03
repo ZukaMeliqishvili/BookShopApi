@@ -13,19 +13,29 @@ namespace BookShopApi.Services
             _categoryRepository = categoryRepository;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            var category = await _categoryRepository.GetById(id);
+            if(category == null)
+            {
+                throw new Exception("No category found by given id");
+            }
+            await _categoryRepository.Delete(category);
         }
 
-        public Task<Category> GetAll()
+        public async Task<IEnumerable<Category>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _categoryRepository.GetAll();
         }
 
-        public Task<Category> GetById(int id)
+        public async Task<Category> GetById(int id)
         {
-            throw new NotImplementedException();
+            var category = await _categoryRepository.GetById(id);
+            if(category == null)
+            {
+                throw new Exception("No category found by given id");
+            }
+            return category;
         }
 
         public async Task insert(CategoryDto categoryDto)

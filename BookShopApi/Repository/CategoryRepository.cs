@@ -28,5 +28,10 @@ namespace BookShopApi.Repository
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Category> GetById(int id)
+        {
+           return await _context.Categories.FirstOrDefaultAsync(x=>x.Id==id);
+        }
     }
 }
