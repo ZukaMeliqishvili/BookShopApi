@@ -1,8 +1,9 @@
 ﻿using BookShopApi.Repository;
+using BookShopApi.Services._Order;
 using BookShopApi.Services.BookService;
 using BookShopApi.Services.CategoryService;
 using BookShopApi.Services.UserServices;
-using Microsoft.AspNetCore.Authorization;
+
 
 namespace BookShopApi.Extensions
 {
@@ -16,6 +17,8 @@ namespace BookShopApi.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IOrderRepository,OrderRepository>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

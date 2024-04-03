@@ -11,5 +11,6 @@ namespace BookShopApi.Entities
         public string Author {  get; set; }
         public decimal Price { get; set; }
         public ICollection<BookCategories> Categories { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
