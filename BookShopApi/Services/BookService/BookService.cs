@@ -39,19 +39,47 @@ namespace BookShopApi.Services.BookService
         public async Task<IEnumerable<BookGetDto>> GetBooks()
         {
             var books = (await _bookRepository.GetAll()).Adapt<List<BookGetDto>>();
-
             //for (int i = 0; i < books.Count; ++i)
             //{
             //    var categories = await _categoryRepository.GetCategoriesByBookId(books[i].Id);
             //    books[i].Categories = categories;
             //}
-            foreach (var book in books)
+            if(books !=null)
             {
-                var categories = await _categoryRepository.GetCategoriesByBookId(book.Id);
-                book.Categories = categories;
+                foreach (var book in books)
+                {
+                    var categories = await _categoryRepository.GetCategoriesByBookId(book.Id);
+                    book.Categories = categories;
+                }
+                
             }
             return books;
+
         }
-        
+        public async Task<BookGetDto> GetBookById(int id)
+        {
+            var book = await _bookRepository.GetById(id);
+            if(book ==null)
+            {
+                throw new Exception("No book found by given id");
+            }
+            var categories = await _categoryRepository.GetCategoriesByBookId(id);
+            var bookDto = book.Adapt<BookGetDto>();
+            bookDto.Categories = categories;
+            return bookDto;
+        }
+        public async Task UpdateBook(int id, BookUpdateDto dto)
+        {
+            var book = await _bookRepository.GetById(id);
+            if(book ==null )
+            {
+                throw new Exception("Book does not exists");
+            }
+            book.Title = dto.Title;
+            book.Author= dto.Author;
+            book.Description = dto.Description;
+            book.Price = dto.Price;
+            await _bookRepository.update(book);
+        }
     }
 }
