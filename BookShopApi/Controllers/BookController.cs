@@ -39,11 +39,11 @@ namespace BookShopApi.Controllers
             return Ok(await _bookService.GetBooks());
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id,string currencyCode="gel")
         {
             try
             {
-                return Ok(await _bookService.GetBookById(id));
+                return Ok(await _bookService.GetBookById(id, currencyCode));
             }
             catch (Exception ex)
             {

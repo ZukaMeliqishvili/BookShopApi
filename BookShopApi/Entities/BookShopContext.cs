@@ -14,6 +14,7 @@ namespace BookShopApi.Entities
         public DbSet<Role> Roles { get; set; }
         public DbSet<BookCategories> BookCategories { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Currency> Currency { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(x =>x.Id);

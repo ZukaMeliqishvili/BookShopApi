@@ -9,11 +9,12 @@ namespace BookShopApi.Services.BookService
     {
         private readonly IBookRepository _bookRepository;
         private readonly ICategoryRepository _categoryRepository;
-
-        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository)
+        private readonly ICurrencyRepository _currencyRepository;
+        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository)
         {
             _bookRepository = bookRepository;
             _categoryRepository = categoryRepository;
+            _currencyRepository = currencyRepository;
         }
         public async Task AddBook(BookDto bookDto)
         {
@@ -56,7 +57,7 @@ namespace BookShopApi.Services.BookService
             return books;
 
         }
-        public async Task<BookGetDto> GetBookById(int id)
+        public async Task<BookGetDto> GetBookById(int id, string currencyCode)
         {
             var book = await _bookRepository.GetById(id);
             if(book ==null)
@@ -65,7 +66,21 @@ namespace BookShopApi.Services.BookService
             }
             var categories = await _categoryRepository.GetCategoriesByBookId(id);
             var bookDto = book.Adapt<BookGetDto>();
+            bookDto.Price =book.Price;
             bookDto.Categories = categories;
+
+            if (currencyCode!="gel")
+            {
+                var currency = await _currencyRepository.GetByCode(currencyCode);
+
+                if (currency == null)
+                {
+                    throw new Exception("Invalid Currency code");
+                }
+                bookDto.Price = Math.Round(bookDto.Price/currency.Rate, 2);
+            }
+           
+            
             return bookDto;
         }
         public async Task UpdateBook(int id, BookUpdateDto dto)

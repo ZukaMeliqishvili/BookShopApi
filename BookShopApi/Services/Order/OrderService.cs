@@ -1,6 +1,8 @@
 ﻿using BookShopApi.Dto._Order;
+using BookShopApi.Dto.Order;
 using BookShopApi.Entities;
 using BookShopApi.Repository;
+using Mapster;
 
 namespace BookShopApi.Services._Order
 {
@@ -8,9 +10,10 @@ namespace BookShopApi.Services._Order
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IBookRepository _bookRepository;
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository)
         {
             _orderRepository = orderRepository;
+            _bookRepository = bookRepository;
         }
         public async Task MakeOrder(int bookId, int userId, OrderRequestDto dto)
         {
@@ -28,13 +31,13 @@ namespace BookShopApi.Services._Order
             };
             await _orderRepository.Add(order);
         }
-        public async Task<IEnumerable<Order>> GetUserOrders(int userId)
+        public async Task<IEnumerable<OrderResponseDto>> GetUserOrders(int userId)
         {
-            return await _orderRepository.GetUserOrders(userId);
+            return (await _orderRepository.GetUserOrders(userId)).Adapt<List<OrderResponseDto>>();
         }
-        public async Task<IEnumerable<Order>> GetOrders()
+        public async Task<IEnumerable<OrderResponseDto>> GetOrders()
         {
-            return await _orderRepository.GetAll();
+            return (await _orderRepository.GetAll()).Adapt<List<OrderResponseDto>>();
         }
     }
 }

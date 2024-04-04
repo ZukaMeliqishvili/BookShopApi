@@ -19,6 +19,7 @@ namespace BookShopApi.Extensions
             services.AddScoped<IBookService, BookService>();
             services.AddScoped<IOrderRepository,OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         }
     }
 }
