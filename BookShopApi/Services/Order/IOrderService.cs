@@ -8,6 +8,6 @@ namespace BookShopApi.Services._Order
     {
         Task<IEnumerable<OrderResponseDto>> GetOrders();
         Task<IEnumerable<OrderResponseDto>> GetUserOrders(int userId);
-        Task MakeOrder(int bookId, int userId, OrderRequestDto dto);
+        Task MakeOrder(int bookId, int userId, OrderRequestDto dto, string currency);
     }
 }

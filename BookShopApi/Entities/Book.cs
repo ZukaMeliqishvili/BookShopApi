@@ -10,7 +10,9 @@ namespace BookShopApi.Entities
         public string Description { get; set; }
         public string Author {  get; set; }
         public decimal Price { get; set; }
-        public ICollection<BookCategories> Categories { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public int NumberOfPages { get; set; }
+        public int AmountInStock { get; set; }
+        public virtual ICollection<BookCategories> Categories { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

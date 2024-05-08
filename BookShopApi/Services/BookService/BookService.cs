@@ -1,4 +1,4 @@
-﻿using BookShopApi.Dto.Book;
+﻿using BookShopApi.Dto._Book;
 using BookShopApi.Entities;
 using BookShopApi.Repository;
 using Mapster;
@@ -26,6 +26,7 @@ namespace BookShopApi.Services.BookService
                 Price = bookDto.Price,
             };
             await _bookRepository.insert(book);
+            //List<Category> categories = new List<Category>();
             foreach(int id in bookDto.CategoryIds)
             {
                 var category = await _categoryRepository.GetById(id);
@@ -33,28 +34,23 @@ namespace BookShopApi.Services.BookService
                 {
                     throw new Exception($"Category by given id:{id} does not exists");
                 }
-               await _bookRepository.AddBookCategories(new BookCategories() {Book=book, CategoryId=category.Id });
+               await _bookRepository.AddBookCategories(new BookCategories() {Book=book, CategoryId=category.Id,Category=category});
             }
             await _bookRepository.SaveChangesAsync();
         }
         public async Task<IEnumerable<BookGetDto>> GetBooks()
         {
-            var books = (await _bookRepository.GetAll()).Adapt<List<BookGetDto>>();
-            //for (int i = 0; i < books.Count; ++i)
+            var books = await _bookRepository.GetAll();
+            //if(books !=null)
             //{
-            //    var categories = await _categoryRepository.GetCategoriesByBookId(books[i].Id);
-            //    books[i].Categories = categories;
-            //}
-            if(books !=null)
-            {
-                foreach (var book in books)
-                {
-                    var categories = await _categoryRepository.GetCategoriesByBookId(book.Id);
-                    book.Categories = categories;
-                }
+            //    foreach (var book in books)
+            //    {
+            //        var categories = await _categoryRepository.GetCategoriesByBookId(book.Id);
+            //        book.Categories = categories;
+            //    }
                 
-            }
-            return books;
+            //}
+            return books.Adapt<List<BookGetDto>>();
 
         }
         public async Task<BookGetDto> GetBookById(int id, string currencyCode)

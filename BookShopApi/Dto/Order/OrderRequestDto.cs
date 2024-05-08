@@ -7,6 +7,5 @@ namespace BookShopApi.Dto._Order
     {
         [Range(1, 100)]
         public int Quantity { get; set; }
-        public string Currency { get; set; }
     }
 }

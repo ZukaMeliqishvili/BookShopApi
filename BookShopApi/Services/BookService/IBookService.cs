@@ -1,4 +1,4 @@
-﻿using BookShopApi.Dto.Book;
+﻿using BookShopApi.Dto._Book;
 
 namespace BookShopApi.Services.BookService
 {

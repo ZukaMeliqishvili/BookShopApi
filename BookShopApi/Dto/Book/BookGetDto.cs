@@ -1,6 +1,6 @@
 ﻿using BookShopApi.Entities;
 
-namespace BookShopApi.Dto.Book
+namespace BookShopApi.Dto._Book
 {
     public class BookGetDto
     {

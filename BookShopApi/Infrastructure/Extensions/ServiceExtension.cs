@@ -5,7 +5,7 @@ using BookShopApi.Services.CategoryService;
 using BookShopApi.Services.UserServices;
 
 
-namespace BookShopApi.Extensions
+namespace BookShopApi.Infrastructure.Extensions
 {
     public static class ServiceExtension
     {
@@ -17,9 +17,10 @@ namespace BookShopApi.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBookService, BookService>();
-            services.AddScoped<IOrderRepository,OrderRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
         }
     }
 }

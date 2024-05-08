@@ -1,26 +1,21 @@
 ﻿using BookShopApi.Dto.User;
-using BookShopApi.Entities;
 using BookShopApi.Services.UserServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
 
 namespace BookShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _config;
 
-        public UserController(IUserService userService, IConfiguration config)
+        public AuthController(IUserService userService, IConfiguration config)
         {
             _userService = userService;
             _config = config;
@@ -47,7 +42,8 @@ namespace BookShopApi.Controllers
             var claims = new[]
            {
                 new Claim(ClaimTypes.NameIdentifier,userinfo.Item1.ToString()),
-                new Claim(ClaimTypes.Role, userinfo.Item2.ToString())
+                new Claim(ClaimTypes.Role, userinfo.Item2),
+                new Claim("CurrencyCode","gel")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));

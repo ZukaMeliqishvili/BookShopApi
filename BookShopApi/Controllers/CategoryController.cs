@@ -17,27 +17,14 @@ namespace BookShopApi.Controllers
             _categoryService = categoryService;
         }
 
-        [Authorize(Roles ="1")]
+        [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         public async Task<IActionResult> AddCategory(CategoryDto dto)
         {
            await _categoryService.insert(dto);
             return Ok();
         }
-        [Authorize(Roles ="1")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
-        {
-            try
-            {
-                await _categoryService.Delete(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        [Authorize(Roles = "Admin,Staff")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {

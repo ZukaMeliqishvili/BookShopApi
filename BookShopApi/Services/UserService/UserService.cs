@@ -2,7 +2,6 @@
 using BookShopApi.Entities;
 using BookShopApi.Repository;
 using Mapster;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,7 +14,7 @@ namespace BookShopApi.Services.UserServices
         {
             _userRepository = userRepository;
         }
-        public async Task<(int,int)> LogIn(UserLoginDto dto)
+        public async Task<(int,string)> LogIn(UserLoginDto dto)
         {
             var user = await _userRepository.GetUser(dto.UserName);
             if (user == null)
@@ -26,7 +25,8 @@ namespace BookShopApi.Services.UserServices
             {
                 throw new Exception("incorect user Credentials");
             }
-            return (user.Id,user.RoleId);
+            
+            return (user.Id,user.Role.Name);
         }
 
         public async Task Register(UserRegisterDto userRegisterDto)

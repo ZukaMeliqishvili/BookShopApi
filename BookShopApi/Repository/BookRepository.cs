@@ -30,12 +30,12 @@ namespace BookShopApi.Repository
 
         public async Task<IEnumerable<Book>> GetAll()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books.Include(x=>x.Categories).ThenInclude(y=>y.Category).ToListAsync();
         }
 
         public async Task<Book> GetById(int id)
         {
-           return await _context.Books.FirstOrDefaultAsync(x=>x.Id == id);
+           return await _context.Books.Include(x => x.Categories).ThenInclude(y => y.Category).FirstOrDefaultAsync(x=>x.Id == id);
 
         }
 
@@ -43,7 +43,6 @@ namespace BookShopApi.Repository
         {
             await _context.Books.AddAsync(book);
         }
-
         public async Task update(Book book)
         {
             _context.Books.Update(book);

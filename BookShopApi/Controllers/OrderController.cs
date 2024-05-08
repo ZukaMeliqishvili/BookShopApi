@@ -18,31 +18,40 @@ namespace BookShopApi.Controllers
             _orderService = orderService;
         }
 
+        protected string GetCurrencyCodeFromCookies()
+        {
+            string currencyCode = Request.Cookies["currencyCode"];
+            if (String.IsNullOrEmpty(currencyCode))
+            {
+                currencyCode = "gel";
+            }
+            return currencyCode;
+        }
         protected virtual string GetUserId()
         {
             return HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        [Authorize(Roles ="2")]
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> GetUserOrders()
         {
             int userId = int.Parse(GetUserId());
             return Ok(await _orderService.GetUserOrders(userId));
         }
-        [Authorize(Roles ="1")]
-        [HttpGet("admin")]
+        [Authorize(Roles = "Admin,Staff")]
+        [HttpGet("Admin")]
         public async Task<IActionResult> GetOrders()
         {
             return Ok(await _orderService.GetOrders());
         }
-        [Authorize(Roles = "2")]
+        [Authorize(Roles = "User")]
         [HttpPost("{id}")]
         public async Task<IActionResult> MakeOrder(int id, OrderRequestDto dto)
         {
             try
             {
-                await _orderService.MakeOrder(id, int.Parse(GetUserId()), dto);
+                await _orderService.MakeOrder(id, int.Parse(GetUserId()), dto, GetCurrencyCodeFromCookies());
                 return Ok();
             }
             catch (Exception ex)

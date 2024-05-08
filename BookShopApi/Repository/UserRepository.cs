@@ -24,7 +24,7 @@ namespace BookShopApi.Repository
 
         public async Task<User> GetUser(string userName)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x=>x.UserName==userName);
+            var user = await _context.Users.Include(x=>x.Role).FirstOrDefaultAsync(x=>x.UserName==userName);
             return user;
         }
 

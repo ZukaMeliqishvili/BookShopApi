@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookShopApi.Dto.Book
+namespace BookShopApi.Dto._Book
 {
     public class BookUpdateDto
     {

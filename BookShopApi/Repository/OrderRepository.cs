@@ -18,7 +18,7 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetAll()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.Include(x=>x.Book).ToListAsync();
         }
         public async Task<Order> GetById(int id)
         {
@@ -26,7 +26,7 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetUserOrders(int userId)
         {
-            return await _context.Orders.Where(x=>x.UserId== userId).ToListAsync();
+            return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book).ToListAsync();
         }
     }
 }

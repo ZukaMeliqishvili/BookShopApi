@@ -1,7 +1,8 @@
-﻿using BookShopApi.Dto.Book;
+﻿using BookShopApi.Dto._Book;
 using BookShopApi.Services.BookService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BookShopApi.Controllers
 {
@@ -15,7 +16,16 @@ namespace BookShopApi.Controllers
         {
             _bookService = bookService;
         }
-        [Authorize(Roles = "1")]
+        protected string GetCurrencyCodeFromCookies()
+        {
+            string currencyCode = Request.Cookies["currencyCode"];
+            if(String.IsNullOrEmpty(currencyCode))
+            {
+                currencyCode = "gel";
+            }
+            return currencyCode;
+        }
+        [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
         public async Task<IActionResult> AddBook(BookDto dto)
         {
@@ -39,10 +49,11 @@ namespace BookShopApi.Controllers
             return Ok(await _bookService.GetBooks());
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id,string currencyCode="gel")
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
+                string currencyCode = GetCurrencyCodeFromCookies();
                 return Ok(await _bookService.GetBookById(id, currencyCode));
             }
             catch (Exception ex)
@@ -50,7 +61,7 @@ namespace BookShopApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [Authorize(Roles ="1")]
+        [Authorize(Roles = "Admin,Staff")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, BookUpdateDto dto)
         {

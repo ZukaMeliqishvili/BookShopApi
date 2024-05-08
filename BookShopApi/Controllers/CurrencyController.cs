@@ -6,18 +6,17 @@ using Newtonsoft.Json.Linq;
 
 namespace BookShopApi.Controllers
 {
-    [Authorize(Roles ="1")]
     [Route("api/[controller]")]
     [ApiController]
     public class CurrencyController : ControllerBase
-    { 
+    {
         private readonly ICurrencyRepository _currencyRepository;
 
         public CurrencyController(ICurrencyRepository currencyRepository)
         {
             _currencyRepository = currencyRepository;
         }
-
+        [Authorize(Roles = "Admin,Staff")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -55,10 +54,49 @@ namespace BookShopApi.Controllers
                 Console.WriteLine($"JSON parsing error occurred: {e.Message}");
                 return NotFound(e.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return NotFound(e.Message);
             }
         }
+        [HttpPut("{codeId}")] 
+        public IActionResult ChangeCurrency(int codeId)
+        {
+            string currencyCode;
+            currencyCode = ((CurrencyEnum)codeId).ToString();
+            if(!(currencyCode=="gel"||currencyCode=="usd"||currencyCode=="eur"))
+            {
+                return BadRequest("Invalid currency CodeID");
+            }
+            try
+            {
+                SetCurrencyCodeCookie(currencyCode);
+
+                return Ok("CurrencyCode updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to update currencyCode: {ex.Message}");
+            }
+        }
+        private void SetCurrencyCodeCookie(string currencyCode)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(30),
+                IsEssential = true, // Make the cookie essential for consent tracking
+                SameSite = SameSiteMode.None, // Adjust SameSite policy as needed
+                Secure = true // Ensure cookie is sent over HTTPS only
+            };
+
+            Response.Cookies.Append("currencyCode", currencyCode, cookieOptions);
+        }
+    }
+   
+    public enum CurrencyEnum
+    {
+        gel =1,
+        usd,
+        eur
     }
 }

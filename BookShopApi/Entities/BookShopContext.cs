@@ -21,6 +21,9 @@ namespace BookShopApi.Entities
             modelBuilder.Entity<User>().Property(x => x.FirstName).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<User>().Property(x => x.LastName).IsRequired().HasMaxLength(255);
             modelBuilder.Entity<User>().Property(x => x.UserName).IsRequired().HasMaxLength(255);
+            modelBuilder.Entity<User>().Property(x => x.Email).IsRequired().HasMaxLength(255);
+            modelBuilder.Entity<User>().Property(x => x.PhoneNumber).IsRequired().HasMaxLength(255);
+            modelBuilder.Entity<User>().Property(x => x.Address).IsRequired().HasMaxLength(500);
             modelBuilder.Entity<User>().HasIndex(x => x.UserName).IsUnique(true);
             modelBuilder.Entity<User>().HasOne(x => x.Role);
             modelBuilder.Entity<Category>().HasKey(x => x.Id);

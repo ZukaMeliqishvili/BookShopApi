@@ -15,7 +15,7 @@ namespace BookShopApi.Services._Order
             _orderRepository = orderRepository;
             _bookRepository = bookRepository;
         }
-        public async Task MakeOrder(int bookId, int userId, OrderRequestDto dto)
+        public async Task MakeOrder(int bookId, int userId, OrderRequestDto dto, string currency)
         {
             var book = await _bookRepository.GetById(bookId);
             if(book == null)
@@ -27,13 +27,14 @@ namespace BookShopApi.Services._Order
                 BookId = bookId,
                 UserId = userId,
                 Quantity = dto.Quantity,
-                Currency = dto.Currency,
+                Currency = currency,
             };
             await _orderRepository.Add(order);
         }
         public async Task<IEnumerable<OrderResponseDto>> GetUserOrders(int userId)
         {
-            return (await _orderRepository.GetUserOrders(userId)).Adapt<List<OrderResponseDto>>();
+            var orders = await _orderRepository.GetUserOrders(userId);
+            return orders.Adapt<List<OrderResponseDto>>();
         }
         public async Task<IEnumerable<OrderResponseDto>> GetOrders()
         {

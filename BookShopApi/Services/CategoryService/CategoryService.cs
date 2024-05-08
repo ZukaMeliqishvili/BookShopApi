@@ -41,6 +41,7 @@ namespace BookShopApi.Services.CategoryService
 
         public async Task insert(CategoryDto categoryDto)
         {
+            categoryDto.Name = categoryDto.Name.ToUpper();
             var category = categoryDto.Adapt<Category>();
             await _categoryRepository.Insert(category);
         }
