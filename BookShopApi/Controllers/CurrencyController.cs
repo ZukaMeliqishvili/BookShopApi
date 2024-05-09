@@ -59,12 +59,12 @@ namespace BookShopApi.Controllers
                 return NotFound(e.Message);
             }
         }
-        [HttpPut("{codeId}")] 
+        [HttpPut("{codeId}")]
         public IActionResult ChangeCurrency(int codeId)
         {
             string currencyCode;
             currencyCode = ((CurrencyEnum)codeId).ToString();
-            if(!(currencyCode=="gel"||currencyCode=="usd"||currencyCode=="eur"))
+            if (!(currencyCode == "gel" || currencyCode == "usd" || currencyCode == "eur"))
             {
                 return BadRequest("Invalid currency CodeID");
             }

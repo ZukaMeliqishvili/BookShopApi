@@ -18,40 +18,37 @@ namespace BookShopApi.Services.BookService
         }
         public async Task AddBook(BookDto bookDto)
         {
-            var book = new Book()
-            {
-                Title = bookDto.Title,
-                Author = bookDto.Author,
-                Description = bookDto.Description,
-                Price = bookDto.Price,
-            };
+            var book = bookDto.Adapt<Book>();
             await _bookRepository.insert(book);
-            //List<Category> categories = new List<Category>();
-            foreach(int id in bookDto.CategoryIds)
+            for(int i=0;i<bookDto.CategoryIds.Count;i++)
             {
+                int id = bookDto.CategoryIds[i];
                 var category = await _categoryRepository.GetById(id);
-                if(category == null) 
+                if (category == null)
                 {
                     throw new Exception($"Category by given id:{id} does not exists");
                 }
-               await _bookRepository.AddBookCategories(new BookCategories() {Book=book, CategoryId=category.Id,Category=category});
+                if(bookDto.CategoryIds.GetRange(0,i).Contains(id))
+                {
+                    continue;
+                }
+                await _bookRepository.AddBookCategories(new BookCategories() { Book = book, CategoryId = category.Id, Category = category });
             }
+            //foreach(int id in bookDto.CategoryIds)
+            //{
+            //    var category = await _categoryRepository.GetById(id);
+            //    if(category == null) 
+            //    {
+            //        throw new Exception($"Category by given id:{id} does not exists");
+            //    }
+            //   await _bookRepository.AddBookCategories(new BookCategories() {Book=book, CategoryId=category.Id,Category=category});
+            //}
             await _bookRepository.SaveChangesAsync();
         }
         public async Task<IEnumerable<BookGetDto>> GetBooks()
         {
             var books = await _bookRepository.GetAll();
-            //if(books !=null)
-            //{
-            //    foreach (var book in books)
-            //    {
-            //        var categories = await _categoryRepository.GetCategoriesByBookId(book.Id);
-            //        book.Categories = categories;
-            //    }
-                
-            //}
             return books.Adapt<List<BookGetDto>>();
-
         }
         public async Task<BookGetDto> GetBookById(int id, string currencyCode)
         {
@@ -91,6 +88,12 @@ namespace BookShopApi.Services.BookService
             book.Description = dto.Description;
             book.Price = dto.Price;
             await _bookRepository.update(book);
+        }
+
+        public async Task<IEnumerable<BookGetDto>> GetBooksByCategory(int categoryId)
+        {
+            var books = await _bookRepository.GetBooksByCategory(categoryId);
+            return books.Adapt<List<BookGetDto>>();
         }
     }
 }

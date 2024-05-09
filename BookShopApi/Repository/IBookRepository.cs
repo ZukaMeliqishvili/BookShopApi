@@ -10,6 +10,7 @@ namespace BookShopApi.Repository
         public Task update(Book book);
         public Task deleteById(int id);
         public Task AddBookCategories(BookCategories bookCateogories);
+        public Task<IEnumerable<Book>> GetBooksByCategory(int categoryId);
         Task SaveChangesAsync();
     }
 }

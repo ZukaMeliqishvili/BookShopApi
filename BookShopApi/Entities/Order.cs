@@ -10,5 +10,6 @@
         public User User { get; set; }
         public string Currency { get; set; }
         public DateTime OrderDateTime { get; set; } = DateTime.Now;
+        public decimal TotalPrice {  get; set; }
     }
 }

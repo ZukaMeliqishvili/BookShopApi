@@ -24,7 +24,6 @@ namespace BookShopApi.Controllers
            await _categoryService.insert(dto);
             return Ok();
         }
-        [Authorize(Roles = "Admin,Staff")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -42,6 +41,5 @@ namespace BookShopApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

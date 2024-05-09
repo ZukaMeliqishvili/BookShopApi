@@ -11,5 +11,6 @@ namespace BookShopApi.Dto.Order
         public int UserId { get; set; }
         public string Currency { get; set; }
         public DateTime OrderDateTime { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }

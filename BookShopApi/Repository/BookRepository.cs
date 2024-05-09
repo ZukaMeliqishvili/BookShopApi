@@ -30,12 +30,12 @@ namespace BookShopApi.Repository
 
         public async Task<IEnumerable<Book>> GetAll()
         {
-            return await _context.Books.Include(x=>x.Categories).ThenInclude(y=>y.Category).ToListAsync();
+            return await _context.Books.Include(x=>x.Categories).ThenInclude(y=>y.Category).Where(x=>x.IsDeleted==false).ToListAsync();
         }
 
         public async Task<Book> GetById(int id)
         {
-           return await _context.Books.Include(x => x.Categories).ThenInclude(y => y.Category).FirstOrDefaultAsync(x=>x.Id == id);
+           return await _context.Books.Include(x => x.Categories).ThenInclude(y => y.Category).FirstOrDefaultAsync(x=>x.Id == id && x.IsDeleted==false);
 
         }
 
@@ -51,6 +51,11 @@ namespace BookShopApi.Repository
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Book>> GetBooksByCategory(int categoryId)
+        {
+            return await _context.BookCategories.Where(x=>x.CategoryId==categoryId).Include(x=>x.Book).ThenInclude(x=>x.Categories).ThenInclude(x=>x.Category).Select(x=>x.Book).Where(x=>x.IsDeleted==false).ToListAsync();
         }
     }
 }

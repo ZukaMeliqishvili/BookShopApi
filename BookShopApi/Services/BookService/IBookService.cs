@@ -7,6 +7,7 @@ namespace BookShopApi.Services.BookService
         Task AddBook(BookDto bookDto);
         Task<BookGetDto> GetBookById(int id, string currencyCode);
         Task<IEnumerable<BookGetDto>> GetBooks();
+        Task<IEnumerable<BookGetDto>> GetBooksByCategory(int categoryId);
         Task UpdateBook(int id, BookUpdateDto dto);
     }
 }

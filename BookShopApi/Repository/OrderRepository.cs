@@ -26,7 +26,8 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetUserOrders(int userId)
         {
-            return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book).ToListAsync();
+            return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book)
+                .ThenInclude(x=>x.Categories).ThenInclude(x=>x.Category).ToListAsync();
         }
     }
 }
