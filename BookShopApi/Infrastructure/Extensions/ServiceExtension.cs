@@ -1,4 +1,5 @@
-﻿using BookShopApi.Repository;
+﻿using BookShopApi.Entities;
+using BookShopApi.Repository;
 using BookShopApi.Services._Order;
 using BookShopApi.Services.BookService;
 using BookShopApi.Services.CategoryService;
@@ -21,6 +22,13 @@ namespace BookShopApi.Infrastructure.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IDbInitializer, DbInitializer>();
+
+            IConfiguration configuration = new ConfigurationBuilder()
+       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+       .Build();
+
+            services.AddSingleton(configuration);
+            services.AddTransient<MyDapper>();
         }
     }
 }

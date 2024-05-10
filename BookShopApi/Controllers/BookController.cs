@@ -2,7 +2,6 @@
 using BookShopApi.Services.BookService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace BookShopApi.Controllers
 {
@@ -80,6 +79,20 @@ namespace BookShopApi.Controllers
         {
            var books =  await _bookService.GetBooksByCategory(categoryId);
             return Ok(books);
+        }
+        [HttpGet("booksByAuthor/{author}")]
+        public async Task<IActionResult> GetBooksByAuthor(string author)
+        {
+            return Ok(await _bookService.GetBooksByAuthor(author));
+        }
+
+        [Authorize(Roles = "Admin,Staff")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveBook(int id)
+        {
+            //soft delete
+           await _bookService.RemoveBook(id);
+            return Ok();
         }
         //[HttpGet]
         //[Route("temp")]

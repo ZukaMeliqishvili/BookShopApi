@@ -10,11 +10,13 @@ namespace BookShopApi.Services.BookService
         private readonly IBookRepository _bookRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICurrencyRepository _currencyRepository;
-        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository)
+        private readonly MyDapper _myDapper;
+        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository, MyDapper myDapper)
         {
             _bookRepository = bookRepository;
             _categoryRepository = categoryRepository;
             _currencyRepository = currencyRepository;
+            _myDapper = myDapper;
         }
         public async Task AddBook(BookDto bookDto)
         {
@@ -87,12 +89,24 @@ namespace BookShopApi.Services.BookService
             book.Author= dto.Author;
             book.Description = dto.Description;
             book.Price = dto.Price;
+            book.NumberOfPages=dto.NumberOfPages;
             await _bookRepository.update(book);
         }
 
         public async Task<IEnumerable<BookGetDto>> GetBooksByCategory(int categoryId)
         {
             var books = await _bookRepository.GetBooksByCategory(categoryId);
+            return books.Adapt<List<BookGetDto>>();
+        }
+
+        public async Task RemoveBook(int id)
+        {
+            await _myDapper.ExecDeleteBookPrecedure(id);
+        }
+
+        public async Task<List<BookGetDto>> GetBooksByAuthor(string author)
+        {
+            var books = await _myDapper.ExecFindBooksByAuthorProcedure(author);
             return books.Adapt<List<BookGetDto>>();
         }
     }

@@ -10,6 +10,7 @@ namespace BookShopApi.Dto._Book
         public string Author { get; set; }
         public decimal Price { get; set; }
         public List<Category> Categories { get; set; }
+        public int NumberOfPages { get; set; }
         public int AmountInStock { get; set; }
     }
 }
