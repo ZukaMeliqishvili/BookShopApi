@@ -1,6 +1,6 @@
 ﻿namespace BookShopApi.Dto.User
 {
-    public class UserRequestDto
+    public class UserResponseDto
     {
         public int Id { get; set; }
         public string UserName { get; set; }

@@ -21,31 +21,32 @@ namespace BookShopApi.Services._Order
         }
         public async Task MakeOrder(int bookId, int userId, OrderRequestDto dto, string currency)
         {
-            decimal currencyRate = 1;
-            if(currency !="gel")
-            {
-               var cur = await _currencyRepository.GetByCode(currency);
-                currencyRate = cur.Rate;
-            }
-            var book = await _bookRepository.GetById(bookId);
-            if(book == null)
-            {
-                throw new Exception("No book found by given Id");
-            }
-            if(book.AmountInStock-dto.Quantity<0)
-            {
-                throw new Exception($"There is no given amount of books: {dto.Quantity} in stock");
-            }
-            Order order = new Order()
-            {
-                BookId = bookId,
-                UserId = userId,
-                Quantity = dto.Quantity,
-                Currency = currency,
-                TotalPrice = Math.Round(((decimal)dto.Quantity * (book.Price / currencyRate)),2),
-            };
-            book.AmountInStock -= dto.Quantity;
-            await _orderRepository.Add(order);
+            //decimal currencyRate = 1;
+            //if (currency != "gel")
+            //{
+            //    var cur = await _currencyRepository.GetByCode(currency);
+            //    currencyRate = cur.Rate;
+            //}
+            //var book = await _bookRepository.GetById(bookId);
+            //if (book == null)
+            //{
+            //    throw new Exception("No book found by given Id");
+            //}
+            //if (book.AmountInStock - dto.Quantity < 0)
+            //{
+            //    throw new Exception($"There is no given amount of books: {dto.Quantity} in stock");
+            //}
+            //Order order = new Order()
+            //{
+            //    BookId = bookId,
+            //    UserId = userId,
+            //    Quantity = dto.Quantity,
+            //    Currency = currency,
+            //    TotalPrice = Math.Round(((decimal)dto.Quantity * (book.Price / currencyRate)), 2),
+            //};
+            //book.AmountInStock -= dto.Quantity;
+            //await _orderRepository.Add(order);
+            throw new NotImplementedException();
         }
         public async Task<IEnumerable<OrderResponseDto>> GetUserOrders(int userId)
         {

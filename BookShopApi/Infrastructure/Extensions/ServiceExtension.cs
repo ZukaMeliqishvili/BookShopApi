@@ -3,6 +3,7 @@ using BookShopApi.Repository;
 using BookShopApi.Services._Order;
 using BookShopApi.Services.BookService;
 using BookShopApi.Services.CategoryService;
+using BookShopApi.Services.ShoppingCart;
 using BookShopApi.Services.UserServices;
 
 
@@ -21,8 +22,9 @@ namespace BookShopApi.Infrastructure.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+            services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IDbInitializer, DbInitializer>();
-
             IConfiguration configuration = new ConfigurationBuilder()
        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
        .Build();

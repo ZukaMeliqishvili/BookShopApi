@@ -59,10 +59,10 @@ namespace BookShopApi.Services.UserServices
             }
         }
 
-        public async Task<List<UserRequestDto>> GetUsers()
+        public async Task<List<UserResponseDto>> GetUsers()
         {
            var users = await _userRepository.GetAll();
-            return users.Adapt<List<UserRequestDto>>();
+            return users.Adapt<List<UserResponseDto>>();
         }
 
         public async Task AssignStaffRoleToUser(int userId)

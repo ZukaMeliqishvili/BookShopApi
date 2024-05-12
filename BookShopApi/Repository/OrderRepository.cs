@@ -18,7 +18,8 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetAll()
         {
-            return await _context.Orders.Include(x=>x.Book).ToListAsync();
+            //return await _context.Orders.Include(x=>x.Book).ToListAsync();
+            throw new NotImplementedException();
         }
         public async Task<Order> GetById(int id)
         {
@@ -26,8 +27,9 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetUserOrders(int userId)
         {
-            return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book)
-                .ThenInclude(x=>x.Categories).ThenInclude(x=>x.Category).ToListAsync();
+            //return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book)
+            //    .ThenInclude(x=>x.Categories).ThenInclude(x=>x.Category).ToListAsync();
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookShopApi.Entities
 {
@@ -15,6 +16,8 @@ namespace BookShopApi.Entities
         public DbSet<BookCategories> BookCategories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Currency> Currency { get; set; }
+        public DbSet<ShoppingCartItem> shoppingCartItems { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(x =>x.Id);
@@ -40,11 +43,16 @@ namespace BookShopApi.Entities
             modelBuilder.Entity<BookCategories>().HasKey(x => x.Id);
             modelBuilder.Entity<BookCategories>().HasOne(x => x.Book).WithMany(x => x.Categories).HasForeignKey(x => x.BookId);
             modelBuilder.Entity<BookCategories>().HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId);
-            modelBuilder.Entity<Order>().HasKey(x=> x.Id);
-            modelBuilder.Entity<Order>().Property(x=>x.Quantity).IsRequired();
-            modelBuilder.Entity<Order>().Property(x => x.Currency).IsRequired();
-            modelBuilder.Entity<Order>().HasOne(x => x.Book).WithMany(x => x.Orders).HasForeignKey(x => x.BookId);
-            modelBuilder.Entity<Order>().HasOne(x => x.User).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<OrderItem>().HasKey(x => x.Id);
+            modelBuilder.Entity<OrderItem>().Property(x=>x.Quantity).IsRequired();
+            modelBuilder.Entity<OrderItem>().HasOne(x => x.Book).WithMany().HasForeignKey(x => x.BookId);
+            modelBuilder.Entity<OrderItem>().HasOne(x => x.Order).WithMany(x => x.OrderItems).HasForeignKey(x => x.OrderId);
+            modelBuilder.Entity<ShoppingCartItem>().HasKey(x => x.Id);
+            modelBuilder.Entity<ShoppingCartItem>().Property(x=>x.Quantity).IsRequired();
+            modelBuilder.Entity<ShoppingCartItem>().HasOne(x => x.Book).WithMany().HasForeignKey(x => x.BookId);
+            modelBuilder.Entity<ShoppingCartItem>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<Order>().HasKey(x => x.Id);
+            modelBuilder.Entity<Order>().Property(x=>x.Currency).IsRequired();
         }
     }
 }

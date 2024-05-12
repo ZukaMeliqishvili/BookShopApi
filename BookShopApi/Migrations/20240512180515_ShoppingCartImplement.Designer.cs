@@ -4,6 +4,7 @@ using BookShopApi.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShopApi.Migrations
 {
     [DbContext(typeof(BookShopContext))]
-    partial class BookShopContextModelSnapshot : ModelSnapshot
+    [Migration("20240512180515_ShoppingCartImplement")]
+    partial class ShoppingCartImplement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +69,7 @@ namespace BookShopApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.BookCategories", b =>
@@ -90,7 +92,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BookCategories", (string)null);
+                    b.ToTable("BookCategories");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Category", b =>
@@ -111,7 +113,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Currency", b =>
@@ -134,7 +136,7 @@ namespace BookShopApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currency", (string)null);
+                    b.ToTable("Currency");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Order", b =>
@@ -164,7 +166,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.OrderItem", b =>
@@ -190,7 +192,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Role", b =>
@@ -211,7 +213,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.ShoppingCartItem", b =>
@@ -237,7 +239,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("shoppingCartItems", (string)null);
+                    b.ToTable("shoppingCartItems");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.User", b =>
@@ -292,7 +294,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.BookCategories", b =>
