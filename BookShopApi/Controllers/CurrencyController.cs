@@ -16,7 +16,7 @@ namespace BookShopApi.Controllers
         {
             _currencyRepository = currencyRepository;
         }
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {

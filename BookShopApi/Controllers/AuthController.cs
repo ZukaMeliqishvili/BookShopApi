@@ -37,10 +37,17 @@ namespace BookShopApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-
-            var userinfo = await _userService.LogIn(userLoginDto);
+            (int, string) userinfo;
+            try
+            {
+                userinfo = await _userService.LogIn(userLoginDto);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             var claims = new[]
-           {
+            {
                 new Claim(ClaimTypes.NameIdentifier,userinfo.Item1.ToString()),
                 new Claim(ClaimTypes.Role, userinfo.Item2),
                 new Claim("CurrencyCode","gel")

@@ -90,6 +90,7 @@ namespace BookShopApi.Services.BookService
             book.Description = dto.Description;
             book.Price = dto.Price;
             book.NumberOfPages=dto.NumberOfPages;
+            book.UpdatedAt = DateTime.Now;
             await _bookRepository.update(book);
         }
 

@@ -7,5 +7,6 @@ namespace BookShopApi.Repository
         Task<User> GetUser(string userName);
         Task Insert(User category);
         Task<bool> Exists(string Username);
+        Task<List<User>> GetAll();
     }
 }

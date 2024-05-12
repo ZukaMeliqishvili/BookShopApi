@@ -55,5 +55,15 @@ namespace BookShopApi.Entities
                 return books;
             }
         }
+        public async Task ExecUserStaffRoleAssignProc(int userId)
+        {
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@userId", userId, DbType.Int32);
+
+                await connection.ExecuteAsync("dbo.AssignStaffRoleToUser", parameters, commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

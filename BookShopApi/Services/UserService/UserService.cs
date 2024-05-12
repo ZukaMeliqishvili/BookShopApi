@@ -10,9 +10,11 @@ namespace BookShopApi.Services.UserServices
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly MyDapper _myDapper;
+        public UserService(IUserRepository userRepository, MyDapper myDapper)
         {
             _userRepository = userRepository;
+            _myDapper = myDapper;
         }
         public async Task<(int,string)> LogIn(UserLoginDto dto)
         {
@@ -55,6 +57,17 @@ namespace BookShopApi.Services.UserServices
                 }
                 return builder.ToString();
             }
+        }
+
+        public async Task<List<UserRequestDto>> GetUsers()
+        {
+           var users = await _userRepository.GetAll();
+            return users.Adapt<List<UserRequestDto>>();
+        }
+
+        public async Task AssignStaffRoleToUser(int userId)
+        {
+            await _myDapper.ExecUserStaffRoleAssignProc(userId);
         }
     }
 }

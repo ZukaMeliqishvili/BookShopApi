@@ -6,5 +6,7 @@ namespace BookShopApi.Services.UserServices
     {
         public Task Register(UserRegisterDto userRegisterDto);
         public Task<(int,string)> LogIn(UserLoginDto dto);
+        public Task<List<UserRequestDto>> GetUsers();
+        public Task AssignStaffRoleToUser(int userId);
     }
 }
