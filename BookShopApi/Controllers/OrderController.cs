@@ -58,12 +58,12 @@ namespace BookShopApi.Controllers
             }
         }
         [Authorize(Roles = "User")]
-        [HttpGet("GetUserOrder/{id}")]
+        [HttpGet("userOrder/{id}")]
         public async Task<IActionResult> GetUserOrderById(int id)
         {
             try
             {
-                var order = _orderService.GetOrder(id, int.Parse(GetUserId()));
+                var order = await _orderService.GetOrder(id, int.Parse(GetUserId()));
                 return Ok(order);
             }
             catch
