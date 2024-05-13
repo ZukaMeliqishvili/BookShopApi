@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookShopApi.Repository
 {
-    public class OrderRepository:IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly BookShopContext _context;
 
@@ -18,18 +18,27 @@ namespace BookShopApi.Repository
         }
         public async Task<IEnumerable<Order>> GetAll()
         {
-            //return await _context.Orders.Include(x=>x.Book).ToListAsync();
-            throw new NotImplementedException();
+            return await _context.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Book).
+                ThenInclude(x => x.Categories).ThenInclude(x => x.Category).Include(x=>x.User).ToListAsync();
         }
         public async Task<Order> GetById(int id)
         {
-            return await _context.Orders.FirstOrDefaultAsync(x=>x.Id == id);
+            return await _context.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Book).
+                 ThenInclude(x => x.Categories).ThenInclude(x => x.Category).Include(x=>x.User).FirstOrDefaultAsync(x=>x.Id==id);
         }
+
+        public async Task<Order> GetById(int id, int userId)
+        {
+            //return await _context.Orders.Include(x => x.OrderItems).ThenInclude(x => x.Book).
+            //     ThenInclude(x => x.Categories).ThenInclude(x => x.Category).FirstOrDefaultAsync(x => x.Id == id && x.UserId==userId);
+            return await _context.Orders.Where(x=>x.Id == id && x.UserId==userId).Include(x => x.OrderItems).ThenInclude(x => x.Book).
+                 ThenInclude(x => x.Categories).ThenInclude(x => x.Category).FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetUserOrders(int userId)
         {
-            //return await _context.Orders.Where(x=>x.UserId== userId).Include(x=>x.Book)
-            //    .ThenInclude(x=>x.Categories).ThenInclude(x=>x.Category).ToListAsync();
-            throw new NotImplementedException();
+            return await _context.Orders.Where(x => x.UserId == userId).Include(x => x.OrderItems).ThenInclude(x => x.Book).
+                 ThenInclude(x => x.Categories).ThenInclude(x => x.Category).ToListAsync();
         }
     }
 }

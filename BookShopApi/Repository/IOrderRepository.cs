@@ -7,6 +7,7 @@ namespace BookShopApi.Repository
         Task Add(Order order);
         Task<IEnumerable<Order>> GetAll();
         Task<Order> GetById(int id);
+        Task<Order> GetById(int id, int userId);
         Task<IEnumerable<Order>> GetUserOrders(int userId);
     }
 }

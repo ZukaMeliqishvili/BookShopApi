@@ -3,12 +3,11 @@ using BookShopApi.Entities;
 
 namespace BookShopApi.Dto.Order
 {
-    public class OrderResponseDto
+    public class OrderItemDto
     {
         public int Id { get; set; }
-        public List<OrderItemDto> OrderItems { get; set; }
+        public BookGetDto Book { get; set; }
+        public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
-        public DateTime OrderDateTime { get; set; }
-        public string Currency { get; set; }
     }
 }

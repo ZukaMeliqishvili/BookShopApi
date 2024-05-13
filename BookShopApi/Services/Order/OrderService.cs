@@ -13,49 +13,78 @@ namespace BookShopApi.Services._Order
         private readonly IOrderRepository _orderRepository;
         private readonly IBookRepository _bookRepository;
         private readonly ICurrencyRepository _currencyRepository;
-        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository, ICurrencyRepository currencyRepository)
+        private readonly IShoppingCartRepository _shoppingCartRepository;
+        private readonly MyDapper _myDapper;
+        public OrderService(IOrderRepository orderRepository, IBookRepository bookRepository, ICurrencyRepository currencyRepository, IShoppingCartRepository shoppingCartRepository, MyDapper myDapper)
         {
             _orderRepository = orderRepository;
             _bookRepository = bookRepository;
             _currencyRepository = currencyRepository;
+            _shoppingCartRepository = shoppingCartRepository;
+            _myDapper = myDapper;
         }
-        public async Task MakeOrder(int bookId, int userId, OrderRequestDto dto, string currency)
+        public async Task MakeOrder(int userId, string currency)
         {
-            //decimal currencyRate = 1;
-            //if (currency != "gel")
-            //{
-            //    var cur = await _currencyRepository.GetByCode(currency);
-            //    currencyRate = cur.Rate;
-            //}
-            //var book = await _bookRepository.GetById(bookId);
-            //if (book == null)
-            //{
-            //    throw new Exception("No book found by given Id");
-            //}
-            //if (book.AmountInStock - dto.Quantity < 0)
-            //{
-            //    throw new Exception($"There is no given amount of books: {dto.Quantity} in stock");
-            //}
-            //Order order = new Order()
-            //{
-            //    BookId = bookId,
-            //    UserId = userId,
-            //    Quantity = dto.Quantity,
-            //    Currency = currency,
-            //    TotalPrice = Math.Round(((decimal)dto.Quantity * (book.Price / currencyRate)), 2),
-            //};
-            //book.AmountInStock -= dto.Quantity;
-            //await _orderRepository.Add(order);
-            throw new NotImplementedException();
+            decimal currencyRate = 1;
+            if (currency != "gel")
+            {
+                var cur = await _currencyRepository.GetByCode(currency);
+                currencyRate = cur.Rate;
+            }
+            var cartItems = await _shoppingCartRepository.GetAll(userId);
+            if (cartItems == null || cartItems.Count==0) 
+            {
+                throw new Exception("There is no items in the cart to makea an order");
+            }
+            Order order = new Order()
+            {
+               UserId=userId,
+               OrderDateTime=DateTime.Now,
+               Currency=currency,
+               OrderItems= new List<OrderItem>()
+            };
+            foreach(var item in cartItems)
+            {
+                order.OrderItems.Add(new OrderItem()
+                {
+                    Book = item.Book,
+                    BookId = item.BookId,
+                    Quantity = item.Quantity,
+                    TotalPrice = item.TotalPrice,
+                });
+            }
+            order.TotalPrice=(order.OrderItems.Sum(x=>x.TotalPrice))/currencyRate;
+            await _orderRepository.Add(order);
+            await _myDapper.RemoveAllItemsFromCart(userId);
         }
         public async Task<IEnumerable<OrderResponseDto>> GetUserOrders(int userId)
         {
             var orders = await _orderRepository.GetUserOrders(userId);
             return orders.Adapt<List<OrderResponseDto>>();
         }
-        public async Task<IEnumerable<OrderResponseDto>> GetOrders()
+        public async Task<IEnumerable<OrderResponseDtoForAdmin>> GetOrders()
         {
-            return (await _orderRepository.GetAll()).Adapt<List<OrderResponseDto>>();
+            return (await _orderRepository.GetAll()).Adapt<List<OrderResponseDtoForAdmin>>();
+        }
+
+        public async Task<OrderResponseDto> GetOrder(int id, int userId)
+        {
+            var order = await _orderRepository.GetById(id,userId);
+            if(order == null)
+            {
+                throw new Exception("Order Was not found");
+            }
+            return order.Adapt<OrderResponseDto>();
+        }
+
+        public async Task<OrderResponseDtoForAdmin> GetOrder(int id)
+        {
+            var order = await _orderRepository.GetById(id);
+            if (order == null)
+            {
+                throw new Exception("Order Was not found");
+            }
+            return order.Adapt<OrderResponseDtoForAdmin>();
         }
     }
 }

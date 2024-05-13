@@ -5,15 +5,17 @@ using Mapster;
 
 namespace BookShopApi.Services.ShoppingCart
 {
-    public class ShoppingCartService:IShoppingCartService
+    public class ShoppingCartService : IShoppingCartService
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly MyDapper _myDapper;
 
-        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IBookRepository bookRepository)
+        public ShoppingCartService(IShoppingCartRepository shoppingCartRepository, IBookRepository bookRepository, MyDapper myDapper)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _bookRepository = bookRepository;
+            _myDapper = myDapper;
         }
 
         public async Task AddToCart(ShoppingCartItemRequestDto item,int userId)
@@ -48,6 +50,11 @@ namespace BookShopApi.Services.ShoppingCart
         public async Task<List<ShoppingCartItemResponseDto>> GetAll(int userId)
         {
             return (await _shoppingCartRepository.GetAll(userId)).Adapt<List<ShoppingCartItemResponseDto>>();
+        }
+
+        public async Task RemoveAllItemsFromCart(int userId)
+        {
+            await _myDapper.RemoveAllItemsFromCart(userId);
         }
 
         public async Task RemoveFromCart(int id,int userId)

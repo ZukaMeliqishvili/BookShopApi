@@ -67,7 +67,7 @@ namespace BookShopApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.BookCategories", b =>
@@ -90,7 +90,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BookCategories", (string)null);
+                    b.ToTable("BookCategories");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Category", b =>
@@ -111,7 +111,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Currency", b =>
@@ -134,7 +134,7 @@ namespace BookShopApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currency", (string)null);
+                    b.ToTable("Currency");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Order", b =>
@@ -145,9 +145,6 @@ namespace BookShopApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -155,16 +152,17 @@ namespace BookShopApi.Migrations
                     b.Property<DateTime>("OrderDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.OrderItem", b =>
@@ -184,13 +182,16 @@ namespace BookShopApi.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Role", b =>
@@ -211,7 +212,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.ShoppingCartItem", b =>
@@ -237,7 +238,7 @@ namespace BookShopApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("shoppingCartItems", (string)null);
+                    b.ToTable("shoppingCartItems");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.User", b =>
@@ -292,7 +293,7 @@ namespace BookShopApi.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.BookCategories", b =>
@@ -316,10 +317,6 @@ namespace BookShopApi.Migrations
 
             modelBuilder.Entity("BookShopApi.Entities.Order", b =>
                 {
-                    b.HasOne("BookShopApi.Entities.Book", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("BookId");
-
                     b.HasOne("BookShopApi.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -332,7 +329,7 @@ namespace BookShopApi.Migrations
             modelBuilder.Entity("BookShopApi.Entities.OrderItem", b =>
                 {
                     b.HasOne("BookShopApi.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,7 +379,7 @@ namespace BookShopApi.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("Orders");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("BookShopApi.Entities.Order", b =>

@@ -6,7 +6,7 @@
         public Book Book { get; set; }
         public int BookId { get; set; }
         public int Quantity { get; set; }
-        public decimal TotalPrice => Quantity * Book.Price;
+        public decimal TotalPrice { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; } 
     }

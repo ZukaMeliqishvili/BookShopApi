@@ -1,7 +1,5 @@
-﻿using BookShopApi.Dto._Order;
-using BookShopApi.Services._Order;
+﻿using BookShopApi.Services._Order;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -46,17 +44,45 @@ namespace BookShopApi.Controllers
             return Ok(await _orderService.GetOrders());
         }
         [Authorize(Roles = "User")]
-        [HttpPost("{id}")]
-        public async Task<IActionResult> MakeOrder(int id, OrderRequestDto dto)
+        [HttpPost]
+        public async Task<IActionResult> MakeOrder()
         {
             try
             {
-                await _orderService.MakeOrder(id, int.Parse(GetUserId()), dto, GetCurrencyCodeFromCookies());
+                await _orderService.MakeOrder(int.Parse(GetUserId()), GetCurrencyCodeFromCookies());
                 return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpGet("GetUserOrder/{id}")]
+        public async Task<IActionResult> GetUserOrderById(int id)
+        {
+            try
+            {
+                var order = _orderService.GetOrder(id, int.Parse(GetUserId()));
+                return Ok(order);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+        [Authorize(Roles ="Admin,Staff")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrder(id);
+                return Ok(order);
+            }
+            catch
+            {
+                return NotFound();
             }
         }
     }

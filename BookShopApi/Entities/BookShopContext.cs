@@ -45,8 +45,14 @@ namespace BookShopApi.Entities
             modelBuilder.Entity<BookCategories>().HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId);
             modelBuilder.Entity<OrderItem>().HasKey(x => x.Id);
             modelBuilder.Entity<OrderItem>().Property(x=>x.Quantity).IsRequired();
-            modelBuilder.Entity<OrderItem>().HasOne(x => x.Book).WithMany().HasForeignKey(x => x.BookId);
-            modelBuilder.Entity<OrderItem>().HasOne(x => x.Order).WithMany(x => x.OrderItems).HasForeignKey(x => x.OrderId);
+            modelBuilder.Entity<OrderItem>()
+            .HasOne(x => x.Order)
+            .WithMany(x => x.OrderItems)
+            .HasForeignKey(x => x.OrderId);
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(x => x.Book)
+                .WithMany(x=>x.OrderItems)
+                .HasForeignKey(x => x.BookId); ;
             modelBuilder.Entity<ShoppingCartItem>().HasKey(x => x.Id);
             modelBuilder.Entity<ShoppingCartItem>().Property(x=>x.Quantity).IsRequired();
             modelBuilder.Entity<ShoppingCartItem>().HasOne(x => x.Book).WithMany().HasForeignKey(x => x.BookId);

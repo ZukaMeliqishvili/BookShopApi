@@ -1,8 +1,6 @@
 ﻿using BookShopApi.Dto.ShoppingCart;
-using BookShopApi.Repository;
 using BookShopApi.Services.ShoppingCart;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -57,6 +55,13 @@ namespace BookShopApi.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+        [Authorize(Roles ="User")]
+        [HttpDelete("RemoveAll")]
+        public async Task<IActionResult> RemoveAll()
+        {
+            await _shoppingCartService.RemoveAllItemsFromCart(int.Parse(GetUserId()));
+            return Ok();
         }
     }
 }

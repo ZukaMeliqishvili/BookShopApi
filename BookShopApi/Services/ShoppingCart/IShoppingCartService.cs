@@ -7,5 +7,6 @@ namespace BookShopApi.Services.ShoppingCart
         Task<List<ShoppingCartItemResponseDto>> GetAll(int userId);
         Task AddToCart(ShoppingCartItemRequestDto item, int userId);
         Task RemoveFromCart(int id, int userId);
+        Task RemoveAllItemsFromCart(int userId);
     }
 }

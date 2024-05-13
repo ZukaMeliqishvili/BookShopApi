@@ -13,7 +13,7 @@ namespace BookShopApi.Entities
         public int NumberOfPages { get; set; }
         public int AmountInStock { get; set; }
         public virtual ICollection<BookCategories> Categories { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime CreatedAt {  get; set; }= DateTime.Now;
         public DateTime DeletedAt { get; set; }
