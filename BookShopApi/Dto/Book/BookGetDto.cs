@@ -12,5 +12,6 @@ namespace BookShopApi.Dto._Book
         public List<Category> Categories { get; set; }
         public int NumberOfPages { get; set; }
         public int AmountInStock { get; set; }
+        public string ImageUrl {  get; set; }
     }
 }

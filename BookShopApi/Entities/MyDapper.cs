@@ -75,5 +75,16 @@ namespace BookShopApi.Entities
                 await connection.ExecuteAsync("dbo.removeAllItemsFromCart", parameters, commandType: CommandType.StoredProcedure);
             }
         }
+        public async Task RestockBook(int id, int Amount)
+        {
+            using (IDbConnection connection = new SqlConnection(_connectionString))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@bookId", id, DbType.Int32);
+                parameters.Add("@amount",Amount, DbType.Int32);
+
+                await connection.ExecuteAsync("dbo.RestockBook", parameters, commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

@@ -45,6 +45,10 @@ namespace BookShopApi.Services._Order
             };
             foreach(var item in cartItems)
             {
+                if(item.Book.AmountInStock < item.Quantity)
+                {
+                    throw new Exception("there is not enough items in stock");
+                }    
                 order.OrderItems.Add(new OrderItem()
                 {
                     Book = item.Book,
@@ -52,6 +56,7 @@ namespace BookShopApi.Services._Order
                     Quantity = item.Quantity,
                     TotalPrice = item.TotalPrice,
                 });
+                item.Book.AmountInStock -= item.Quantity;
             }
             order.TotalPrice=(order.OrderItems.Sum(x=>x.TotalPrice))/currencyRate;
             await _orderRepository.Add(order);

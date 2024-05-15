@@ -18,7 +18,7 @@ namespace BookShopApi.Controllers
         protected string GetCurrencyCodeFromCookies()
         {
             string currencyCode = Request.Cookies["currencyCode"];
-            if(String.IsNullOrEmpty(currencyCode))
+            if (String.IsNullOrEmpty(currencyCode))
             {
                 currencyCode = "gel";
             }
@@ -26,15 +26,27 @@ namespace BookShopApi.Controllers
         }
         [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
-        public async Task<IActionResult> AddBook(BookDto dto)
+        public async Task<IActionResult> AddBook([FromForm]BookDto dto, IFormFile file)
         {
             try
             {
-                if (!ModelState.IsValid)
+                if (file == null || file.Length == 0)
                 {
-                    return BadRequest();
+                    return BadRequest("No file uploaded");
                 }
-                await _bookService.AddBook(dto);
+
+                var fileExtension = Path.GetExtension(file.FileName);
+                if (string.IsNullOrEmpty(fileExtension) || !fileExtension.Equals(".jpg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest("Only JPG files are allowed");
+                }
+
+                var filePath = Path.Combine("wwwRoot", "Images", file.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                await _bookService.AddBook(dto, filePath);
                 return Ok();
             }
             catch (Exception ex)
@@ -93,6 +105,20 @@ namespace BookShopApi.Controllers
             //soft delete
            await _bookService.RemoveBook(id);
             return Ok();
+        }
+        [Authorize(Roles ="Admin,Staff")]
+        [HttpPut("restockBook/{id}")]
+        public async Task<IActionResult> RestockBook(int id, int Amount)
+        {
+            try
+            {
+                await _bookService.RestockBook(id, Amount);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         //[HttpGet]
         //[Route("temp")]

@@ -18,5 +18,6 @@ namespace BookShopApi.Entities
         public DateTime CreatedAt {  get; set; }= DateTime.Now;
         public DateTime DeletedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

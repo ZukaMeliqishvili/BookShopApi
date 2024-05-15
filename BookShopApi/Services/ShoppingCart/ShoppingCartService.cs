@@ -43,7 +43,6 @@ namespace BookShopApi.Services.ShoppingCart
                 Quantity = item.Quantity,
                 UserId = userId
             };
-            book.AmountInStock -= item.Quantity;
             await _shoppingCartRepository.Add(entity);
         }
 
@@ -64,7 +63,6 @@ namespace BookShopApi.Services.ShoppingCart
             {
                 throw new Exception("Item was not found");
             }
-            cartItem.Book.AmountInStock += cartItem.Quantity;
             await _shoppingCartRepository.Delete(cartItem);
         }
     }

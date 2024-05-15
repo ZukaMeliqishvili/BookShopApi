@@ -2,6 +2,7 @@
 using BookShopApi.Entities;
 using BookShopApi.Repository;
 using Mapster;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace BookShopApi.Services.BookService
 {
@@ -11,6 +12,7 @@ namespace BookShopApi.Services.BookService
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICurrencyRepository _currencyRepository;
         private readonly MyDapper _myDapper;
+        //private readonly IDistributedCache _cache;
         public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository, MyDapper myDapper)
         {
             _bookRepository = bookRepository;
@@ -18,9 +20,10 @@ namespace BookShopApi.Services.BookService
             _currencyRepository = currencyRepository;
             _myDapper = myDapper;
         }
-        public async Task AddBook(BookDto bookDto)
+        public async Task AddBook(BookDto bookDto, string imageUrl)
         {
             var book = bookDto.Adapt<Book>();
+            book.ImageUrl = imageUrl;
             await _bookRepository.insert(book);
             for(int i=0;i<bookDto.CategoryIds.Count;i++)
             {
@@ -36,15 +39,7 @@ namespace BookShopApi.Services.BookService
                 }
                 await _bookRepository.AddBookCategories(new BookCategories() { Book = book, CategoryId = category.Id, Category = category });
             }
-            //foreach(int id in bookDto.CategoryIds)
-            //{
-            //    var category = await _categoryRepository.GetById(id);
-            //    if(category == null) 
-            //    {
-            //        throw new Exception($"Category by given id:{id} does not exists");
-            //    }
-            //   await _bookRepository.AddBookCategories(new BookCategories() {Book=book, CategoryId=category.Id,Category=category});
-            //}
+            
             await _bookRepository.SaveChangesAsync();
         }
         public async Task<IEnumerable<BookGetDto>> GetBooks()
@@ -109,6 +104,15 @@ namespace BookShopApi.Services.BookService
         {
             var books = await _myDapper.ExecFindBooksByAuthorProcedure(author);
             return books.Adapt<List<BookGetDto>>();
+        }
+
+        public async Task RestockBook(int id, int amount)
+        {
+            if(amount<1 || amount > 100000)
+            {
+                throw new Exception("Wrong Amount");
+            }
+            await _myDapper.RestockBook(id, amount);
         }
     }
 }

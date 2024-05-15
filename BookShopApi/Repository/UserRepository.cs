@@ -27,6 +27,11 @@ namespace BookShopApi.Repository
             return await _context.Users.Where(x=>x.RoleId==3).ToListAsync();
         }
 
+        public async Task<User> GetById(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<User> GetUser(string userName)
         {
             var user = await _context.Users.Include(x=>x.Role).FirstOrDefaultAsync(x=>x.UserName==userName);
@@ -36,6 +41,11 @@ namespace BookShopApi.Repository
         public async Task Insert(User user)
         {
             await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChanges()
+        {
             await _context.SaveChangesAsync();
         }
     }

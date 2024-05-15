@@ -69,5 +69,22 @@ namespace BookShopApi.Services.UserServices
         {
             await _myDapper.ExecUserStaffRoleAssignProc(userId);
         }
+
+        public async Task Update(int userId, UserUpdateDto userUpdateDto)
+        {
+            var user = await _userRepository.GetById(userId);
+            if(user != null)
+            {
+                user.PhoneNumber= userUpdateDto.PhoneNumber;
+                user.Address= userUpdateDto.Address;
+                user.Email= userUpdateDto.Email;
+            }
+            await _userRepository.SaveChanges();
+        }
+
+        public async Task<UserResponseDto> GetUserInfo(int userId)
+        {
+           return (await _userRepository.GetById(userId)).Adapt<UserResponseDto>();
+        }
     }
 }

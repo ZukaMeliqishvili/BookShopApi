@@ -8,5 +8,7 @@ namespace BookShopApi.Repository
         Task Insert(User category);
         Task<bool> Exists(string Username);
         Task<List<User>> GetAll();
+        Task<User> GetById(int id);
+        Task SaveChanges();
     }
 }

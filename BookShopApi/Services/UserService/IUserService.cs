@@ -8,5 +8,7 @@ namespace BookShopApi.Services.UserServices
         public Task<(int,string)> LogIn(UserLoginDto dto);
         public Task<List<UserResponseDto>> GetUsers();
         public Task AssignStaffRoleToUser(int userId);
+        public Task Update(int userId, UserUpdateDto userUpdateDto);
+        public Task<UserResponseDto> GetUserInfo(int userId);
     }
 }
