@@ -3,6 +3,7 @@ using BookShopApi.Entities;
 using BookShopApi.Repository;
 using Mapster;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace BookShopApi.Services.BookService
 {
@@ -12,13 +13,14 @@ namespace BookShopApi.Services.BookService
         private readonly ICategoryRepository _categoryRepository;
         private readonly ICurrencyRepository _currencyRepository;
         private readonly MyDapper _myDapper;
-        //private readonly IDistributedCache _cache;
-        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository, MyDapper myDapper)
+        private readonly IDistributedCache _cache;
+        public BookService(IBookRepository bookRepository, ICategoryRepository categoryRepository, ICurrencyRepository currencyRepository, MyDapper myDapper, IDistributedCache cache)
         {
             _bookRepository = bookRepository;
             _categoryRepository = categoryRepository;
             _currencyRepository = currencyRepository;
             _myDapper = myDapper;
+            _cache = cache;
         }
         public async Task AddBook(BookDto bookDto, string imageUrl)
         {
@@ -44,33 +46,43 @@ namespace BookShopApi.Services.BookService
         }
         public async Task<IEnumerable<BookGetDto>> GetBooks()
         {
-            var books = await _bookRepository.GetAll();
-            return books.Adapt<List<BookGetDto>>();
+            var cacheKey = "GetBooks";
+            var cacheData = await _cache.GetStringAsync(cacheKey);
+            if(!string.IsNullOrEmpty(cacheData))
+            {
+                List<BookGetDto> dto = JsonConvert.DeserializeObject<List<BookGetDto>>(cacheData);
+                return dto;
+            }
+            var books = (await _bookRepository.GetAll()).Adapt<List<BookGetDto>>();
+            var chacheOptions = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                .SetAbsoluteExpiration(TimeSpan.FromHours(0.5));
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(books), chacheOptions);
+            return books;
         }
         public async Task<BookGetDto> GetBookById(int id, string currencyCode)
         {
+            var cacheKey = $"GetBookById-{id}-{currencyCode}";
+            var cacheData = await _cache.GetStringAsync(cacheKey);
+            BookGetDto bookDto;
+            if(!string.IsNullOrEmpty(cacheData))
+            {
+                bookDto =  JsonConvert.DeserializeObject<BookGetDto>(cacheData);
+                return bookDto;
+            }
             var book = await _bookRepository.GetById(id);
             if(book ==null)
             {
                 throw new Exception("No book found by given id");
             }
             var categories = await _categoryRepository.GetCategoriesByBookId(id);
-            var bookDto = book.Adapt<BookGetDto>();
-            bookDto.Price =book.Price;
+            bookDto = book.Adapt<BookGetDto>();
+            bookDto.Price=book.Price;
             bookDto.Categories = categories;
-
-            if (currencyCode!="gel")
-            {
-                var currency = await _currencyRepository.GetByCode(currencyCode);
-
-                if (currency == null)
-                {
-                    throw new Exception("Invalid Currency code");
-                }
-                bookDto.Price = Math.Round(bookDto.Price/currency.Rate, 2);
-            }
-           
-            
+            var chacheOptions = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                .SetAbsoluteExpiration(TimeSpan.FromHours(0.5));
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(bookDto), chacheOptions);
             return bookDto;
         }
         public async Task UpdateBook(int id, BookUpdateDto dto)
@@ -88,7 +100,20 @@ namespace BookShopApi.Services.BookService
             book.UpdatedAt = DateTime.Now;
             await _bookRepository.update(book);
         }
+        private async Task AssignPrice(BookGetDto book, string currencyCode)
+        {
 
+            if (currencyCode != "gel")
+            {
+                var currency = await _currencyRepository.GetByCode(currencyCode);
+
+                if (currency == null)
+                {
+                    throw new Exception("Invalid Currency code");
+                }
+                book.Price = Math.Round(book.Price / currency.Rate, 2);
+            }
+        }
         public async Task<IEnumerable<BookGetDto>> GetBooksByCategory(int categoryId)
         {
             var books = await _bookRepository.GetBooksByCategory(categoryId);

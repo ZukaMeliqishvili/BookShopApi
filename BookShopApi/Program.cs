@@ -10,7 +10,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using Swashbuckle.AspNetCore.Filters;
+using StackExchange.Redis;
 
 namespace BookShopApi
 {
@@ -75,12 +75,11 @@ namespace BookShopApi
                     };
                 });
 
-            // Add Redis cache configuration
-            // builder.Services.AddStackExchangeRedisCache(options =>
-            // {
-            //    var redisConnectionString = builder.Configuration["RedisCache:ConnectionString"];
-            //    options.Configuration = redisConnectionString;
-            // });
+             builder.Services.AddStackExchangeRedisCache(options =>
+             {
+                 var redisConnectionString = builder.Configuration["RedisCache:ConnectionString"];
+                 options.Configuration = redisConnectionString;
+             });
 
             // Other services registration
             builder.Services.AddDbContext<BookShopContext>(options =>
