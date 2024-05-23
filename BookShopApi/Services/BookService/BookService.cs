@@ -41,7 +41,7 @@ namespace BookShopApi.Services.BookService
                 }
                 await _bookRepository.AddBookCategories(new BookCategories() { Book = book, CategoryId = category.Id, Category = category });
             }
-            
+            await _cache.RemoveAsync("GetBooks");
             await _bookRepository.SaveChangesAsync();
         }
         public async Task<IEnumerable<BookGetDto>> GetBooks()
@@ -79,6 +79,7 @@ namespace BookShopApi.Services.BookService
             bookDto = book.Adapt<BookGetDto>();
             bookDto.Price=book.Price;
             bookDto.Categories = categories;
+            await AssignPrice(bookDto, currencyCode);
             var chacheOptions = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromMinutes(5))
                 .SetAbsoluteExpiration(TimeSpan.FromHours(0.5));
@@ -99,6 +100,7 @@ namespace BookShopApi.Services.BookService
             book.NumberOfPages=dto.NumberOfPages;
             book.UpdatedAt = DateTime.Now;
             await _bookRepository.update(book);
+            await UpdateRedisCache(id);
         }
         private async Task AssignPrice(BookGetDto book, string currencyCode)
         {
@@ -116,13 +118,22 @@ namespace BookShopApi.Services.BookService
         }
         public async Task<IEnumerable<BookGetDto>> GetBooksByCategory(int categoryId)
         {
-            var books = await _bookRepository.GetBooksByCategory(categoryId);
-            return books.Adapt<List<BookGetDto>>();
+            List<BookGetDto> books;
+           var cacheData = await _cache.GetStringAsync("GetBooks");
+            if (!string.IsNullOrEmpty(cacheData))
+            {
+                books = JsonConvert.DeserializeObject<List<BookGetDto>>(cacheData);
+                return books.Where(b => b.Categories.Any(x=>x.Id==categoryId));
+            }
+
+            books = (await _bookRepository.GetBooksByCategory(categoryId)).Adapt<List<BookGetDto>>();
+            return books;
         }
 
         public async Task RemoveBook(int id)
         {
             await _myDapper.ExecDeleteBookPrecedure(id);
+            await UpdateRedisCache(id);
         }
 
         public async Task<List<BookGetDto>> GetBooksByAuthor(string author)
@@ -138,6 +149,15 @@ namespace BookShopApi.Services.BookService
                 throw new Exception("Wrong Amount");
             }
             await _myDapper.RestockBook(id, amount);
+            await UpdateRedisCache(id);
+        }
+        private async Task UpdateRedisCache(int id)
+        {
+            string key = $"GetBookById-{id}";
+            await _cache.RemoveAsync(key + "-gel");
+            await _cache.RemoveAsync(key + "-usd");
+            await _cache.RefreshAsync(key + "-eur");
+            await _cache.RemoveAsync("GetBooks");
         }
     }
 }

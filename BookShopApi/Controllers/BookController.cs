@@ -120,34 +120,5 @@ namespace BookShopApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //[HttpGet]
-        //[Route("temp")]
-        //public async Task Temp()
-        //{
-        //    Random r = new Random();
-        //    int[] categoryIds = new int[]
-        //    {
-        //        1,2,3,4,5
-        //    };
-        //    List<BookDto> books = new List<BookDto>();
-        //    string[] authors = new string[] { "H.P Lovecraft", "Vazha Pshavela", "Arthur Conan Doyle", "Nodar Dumbadze", "william shakespeare" };
-        //    for (int i = 0; i < 51; i++)
-        //    {
-        //        BookDto book = new BookDto();
-        //        book.Title = $"book{i + 1}";
-        //        book.Author = authors[r.Next(0, authors.Length)];
-        //        book.NumberOfPages = r.Next(50, 501);
-        //        book.Description = book.Title + "Description";
-        //        book.CategoryIds = new List<int>() { categoryIds[r.Next(0, categoryIds.Length)],
-        //            categoryIds[r.Next(0, categoryIds.Length)], categoryIds[r.Next(0, categoryIds.Length)] };
-        //        book.Price = r.Next(10, 100);
-        //        book.AmountInStock = r.Next(10, 1000);
-        //        books.Add(book);
-        //    }
-        //    foreach (var book in books)
-        //    {
-        //        await _bookService.AddBook(book);
-        //    }
-        //}
     }
 }

@@ -110,7 +110,7 @@ namespace BookShopApi
             {
                 endpoints.MapControllers();
             });
-
+            //app.MapControllers();
             app.Run();
         }
     }
