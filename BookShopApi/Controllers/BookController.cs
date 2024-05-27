@@ -3,6 +3,7 @@ using BookShopApi.Services.BookService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace BookShopApi.Controllers
 {
     [Route("api/[controller]")]
@@ -26,27 +27,20 @@ namespace BookShopApi.Controllers
         }
         [Authorize(Roles = "Admin,Staff")]
         [HttpPost]
-        public async Task<IActionResult> AddBook([FromForm]BookDto dto, IFormFile file)
+        public async Task<IActionResult> AddBook(BookDto dto)
         {
             try
             {
-                if (file == null || file.Length == 0)
+                var imageBytes = Convert.FromBase64String(dto.ImageBase64);
+                if(!(imageBytes.Length > 1 && imageBytes[0] == 0xFF && imageBytes[1] == 0xD8))
                 {
-                    return BadRequest("No file uploaded");
+                    return BadRequest("File must be in jpg format");
                 }
-
-                var fileExtension = Path.GetExtension(file.FileName);
-                if (string.IsNullOrEmpty(fileExtension) || !fileExtension.Equals(".jpg", StringComparison.OrdinalIgnoreCase))
-                {
-                    return BadRequest("Only JPG files are allowed");
-                }
-
-                var filePath = Path.Combine("wwwRoot", "Images", file.FileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                await _bookService.AddBook(dto, filePath);
+                string imageName = $"{Guid.NewGuid()}.jpg";
+                var filePath = Path.Combine("wwwroot", "Images", imageName);
+                var imageUrl = Path.Combine("Images", imageName).Replace('\\', '/');
+                System.IO.File.WriteAllBytes(filePath, imageBytes);
+                await _bookService.AddBook(dto, imageUrl);
                 return Ok();
             }
             catch (Exception ex)

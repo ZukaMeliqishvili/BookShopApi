@@ -1,0 +1,28 @@
+﻿@model IPagedList<BookRequestModel>
+<link rel="stylesheet" href="~/css/pagination.css" />
+<div class="row pb-3">
+    @foreach (var obj in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12 p-1" style="border:1px solid #008cba; border-radius: 5px;">
+                    <div class="card">
+                        <img src="https://localhost:5001/@obj.ImageUrl" class="card-img-top rounded" style="height:310px" alt="Image not found" />
+                        <div class="card-body" style="height:200px">
+                            <div class="pl-1">
+                                <p class="card-title h5 text-white">@obj.Title</p>
+                                <p class="card-title h5 text-white">By <b>@obj.Author</b></p>
+                            </div>
+                            <div>
+                                <a asp-action="Details" asp-route-Id="@obj.Id" class="btn btn-primary form-control">
+                                    Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))

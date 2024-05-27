@@ -10,7 +10,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using StackExchange.Redis;
 
 namespace BookShopApi
 {
@@ -103,6 +102,7 @@ namespace BookShopApi
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

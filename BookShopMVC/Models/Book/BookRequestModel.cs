@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using BookShopMVC.Models.Category;
 
-namespace BookShopApi.Dto._Book
+namespace BookShopMVC.Models.Book
 {
-    public class BookDto
+    public class BookRequestModel
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
         public decimal Price { get; set; }
+        public List<CategoryRequestModel> Categories { get; set; }
         public int NumberOfPages { get; set; }
         public int AmountInStock { get; set; }
-        public List<int> CategoryIds { get; set; }
-        public string ImageBase64 {  get; set; }
+        public string ImageUrl { get; set; }
     }
 }
