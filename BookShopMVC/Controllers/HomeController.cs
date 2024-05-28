@@ -1,11 +1,10 @@
 ﻿using BookShopMVC.Models;
 using BookShopMVC.Models.Book;
+using BookShopMVC.Models.Category;
+using BookShopMVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using X.PagedList;
 
 namespace BookShopMVC.Controllers
@@ -20,22 +19,41 @@ namespace BookShopMVC.Controllers
             baseUrl = configuration["ApiBaseURL:url"];
         }
 
-        public async Task<IActionResult> Index(int? page = 1)
+        public async Task<IActionResult> Index(int? categoryId, int? page = 1)
         {
             string url = baseUrl + "/Book";
-            string jsonString;
+            string url1 = baseUrl + "/Category";
+            string booksJsonString;
+            string categoriesJsonString;
             using (HttpClient client = new HttpClient())
             {
+                if(categoryId.HasValue)
+                {
+                    url += $"/booksByCategory/{categoryId}";
+                }
                 HttpResponseMessage response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
                     return BadRequest(response.Content);
                 }
-                jsonString = await response.Content.ReadAsStringAsync();
+                booksJsonString = await response.Content.ReadAsStringAsync();
+
+                HttpResponseMessage response1 = await client.GetAsync(url1);
+                if(!response1.IsSuccessStatusCode)
+                {
+                    return BadRequest(response1.Content);
+                }
+                categoriesJsonString = await response1.Content.ReadAsStringAsync();
             }
-            var books = JsonConvert.DeserializeObject<List<BookRequestModel>>(jsonString);
+            var books = JsonConvert.DeserializeObject<List<BookResponseModel>>(booksJsonString);
+            var categories = JsonConvert.DeserializeObject<List<CategoryResponseModel>>(categoriesJsonString);
             int pageNumber = page ?? 1;
-            return View(books.ToPagedList(pageNumber, 8));
+            HomeVM homeVM = new HomeVM()
+            {
+                Books = books.ToPagedList(pageNumber, 16),
+                Categories = categories
+            };
+            return View(homeVM);
         }
 
         public IActionResult Privacy()
