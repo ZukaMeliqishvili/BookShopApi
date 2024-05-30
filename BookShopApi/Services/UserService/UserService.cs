@@ -16,7 +16,7 @@ namespace BookShopApi.Services.UserServices
             _userRepository = userRepository;
             _myDapper = myDapper;
         }
-        public async Task<(int,string)> LogIn(UserLoginDto dto)
+        public async Task<(int,string,string)> LogIn(UserLoginDto dto)
         {
             var user = await _userRepository.GetUser(dto.UserName);
             if (user == null)
@@ -28,7 +28,7 @@ namespace BookShopApi.Services.UserServices
                 throw new Exception("incorect user Credentials");
             }
             
-            return (user.Id,user.Role.Name);
+            return (user.Id,user.Role.Name,user.UserName);
         }
 
         public async Task Register(UserRegisterDto userRegisterDto)

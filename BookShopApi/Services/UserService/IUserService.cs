@@ -5,7 +5,7 @@ namespace BookShopApi.Services.UserServices
     public interface IUserService
     {
         public Task Register(UserRegisterDto userRegisterDto);
-        public Task<(int,string)> LogIn(UserLoginDto dto);
+        public Task<(int,string,string)> LogIn(UserLoginDto dto);
         public Task<List<UserResponseDto>> GetUsers();
         public Task AssignStaffRoleToUser(int userId);
         public Task Update(int userId, UserUpdateDto userUpdateDto);

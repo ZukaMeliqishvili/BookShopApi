@@ -5,6 +5,7 @@ using BookShopMVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Net;
 using X.PagedList;
 
 namespace BookShopMVC.Controllers
@@ -55,7 +56,27 @@ namespace BookShopMVC.Controllers
             };
             return View(homeVM);
         }
+        public async Task<IActionResult> Details(int id)
+        {
+            string currencyCode = Request.Cookies["currencyCode"] ?? "gel";
+            string url = baseUrl + $"/Book/{id}";
+            string json;
+            using (HttpClient client = new HttpClient())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("Cookie", $"currencyCode={currencyCode}");
+                HttpResponseMessage response = await client.SendAsync(request);
+                if(!response.IsSuccessStatusCode)
+                {
+                    return BadRequest();
+                }
+                json = await response.Content.ReadAsStringAsync();
+            };
 
+            ViewBag.CurrencyCode = currencyCode;
+            var book = JsonConvert.DeserializeObject<BookResponseModel>(json);
+            return View(book);
+        }
         public IActionResult Privacy()
         {
             return View();

@@ -1,6 +1,7 @@
 ﻿using BookShopApi.Dto.User;
 using BookShopApi.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -37,7 +38,7 @@ namespace BookShopApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-            (int, string) userinfo;
+            (int, string,string) userinfo;
             try
             {
                 userinfo = await _userService.LogIn(userLoginDto);
@@ -50,7 +51,7 @@ namespace BookShopApi.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier,userinfo.Item1.ToString()),
                 new Claim(ClaimTypes.Role, userinfo.Item2),
-                new Claim("CurrencyCode","gel")
+                new Claim(ClaimTypes.Name, userinfo.Item3),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -60,7 +61,7 @@ namespace BookShopApi.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(20),
+                Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
             };
 

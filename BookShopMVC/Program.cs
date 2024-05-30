@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 namespace BookShopMVC
 {
     public class Program
@@ -9,6 +13,15 @@ namespace BookShopMVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+            builder.Services.AddHttpClient();
+            builder.Services.AddAuthentication("Identity.Application")
+     .AddCookie("Identity.Application", options =>
+     {
+         options.Cookie.Name = "AuthCookie";
+
+     });
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
