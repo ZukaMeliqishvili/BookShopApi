@@ -1,4 +1,11 @@
-﻿@model HomeVM
+﻿@{
+    var userRole = "";
+    if(User.Identity.IsAuthenticated)
+    {
+        userRole = User.FindFirst("role").Value;
+    }
+}
+@model HomeVM
 <link rel="stylesheet" href="~/css/pagination.css" />
 
 <div class="row">
@@ -28,9 +35,27 @@
                                         <p class="card-title h5 text-white">By <b>@obj.Author</b></p>
                                     </div>
                                     <div>
-                                        <a asp-action="Details" asp-route-Id=@obj.Id class="btn btn-primary form-control">
-                                            Details
-                                        </a>
+                                        @{
+                                            if (userRole == "Admin" || userRole == "Staff")
+                                            {
+                                                <div class="col-12 pb-3">
+                                                    <div class="row">
+                                                        <div class="col-md-6 pb-3">
+                                                            <a asp-controller="Book" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-warning btn-block">Update Book</a>
+                                                        </div>
+                                                        <div class="col-md-6 pb-3">
+                                                            <a asp-controller="Book" asp-action="Restock" asp-route-id="@obj.Id" class="btn btn-primary btn-block">Restock Book</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Details" asp-route-Id=@obj.Id class="btn btn-primary form-control">
+                                                    Details
+                                                </a>
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </div>

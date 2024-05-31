@@ -18,7 +18,8 @@ namespace BookShopMVC
      .AddCookie("Identity.Application", options =>
      {
          options.Cookie.Name = "AuthCookie";
-
+         options.LoginPath = "/Account/Login";
+         options.AccessDeniedPath = "/Account/AccessDenied";
      });
 
 

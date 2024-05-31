@@ -5,7 +5,6 @@ using BookShopMVC.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Net;
 using X.PagedList;
 
 namespace BookShopMVC.Controllers
