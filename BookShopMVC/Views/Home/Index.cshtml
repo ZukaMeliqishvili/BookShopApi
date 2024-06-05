@@ -29,7 +29,7 @@
                         <div class="col-12 p-1" style="border:1px solid #008cba; border-radius: 5px;">
                             <div class="card">
                                 <img src="https://localhost:5001/@obj.ImageUrl" class="card-img-top rounded" style="height:310px" alt="Image not found" />
-                                <div class="card-body" style="height:200px">
+                                <div class="card-body" style="height:150px">
                                     <div class="pl-1">
                                         <p class="card-title h5 text-white">@obj.Title</p>
                                         <p class="card-title h5 text-white">By <b>@obj.Author</b></p>
@@ -38,12 +38,12 @@
                                         @{
                                             if (userRole == "Admin" || userRole == "Staff")
                                             {
-                                                <div class="col-12 pb-3">
+                                                <div class="col-12 pb-1">
                                                     <div class="row">
-                                                        <div class="col-md-6 pb-3">
+                                                        <div class="col-md-6 pb-6">
                                                             <a asp-controller="Book" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-warning btn-block">Update Book</a>
                                                         </div>
-                                                        <div class="col-md-6 pb-3">
+                                                        <div class="col-md-6 pb-6">
                                                             <a asp-controller="Book" asp-action="Restock" asp-route-id="@obj.Id" class="btn btn-primary btn-block">Restock Book</a>
                                                         </div>
                                                     </div>

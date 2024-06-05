@@ -1,0 +1,56 @@
+﻿@model BookResponseModel
+<form method="post" asp-action="Update" enctype="multipart/form-data">
+    <input asp-for="Id" hidden />
+    <div class="row">
+        <div class="col-10">
+            <div class="border p-3 mt-4">
+                <div class="row pb-2">
+                    <h2 class="text-primary">Update Book</h2>
+                    <hr />
+                </div>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Author"></label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Price"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="NumberOfPages"></label>
+                    <input asp-for="NumberOfPages" class="form-control" />
+                    <span asp-validation-for="NumberOfPages" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="AmountInStock"></label>
+                    <input asp-for="AmountInStock" class="form-control" readonly />
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+                    <a asp-controller="Book" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 pt-4">
+            <img src="https://localhost:5001/@Model.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
