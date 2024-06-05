@@ -74,5 +74,25 @@ namespace BookShopMVC.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+        [HttpPost]
+        public async Task<IActionResult> Restock(int bookId, int quantity)
+        {
+            if (quantity<1 || quantity > 100000)
+            {
+                TempData["error"] = "Please enter valid Amount";
+            }
+            var url = _baseUrl + $"/Book/restockBook/{bookId}?Amount={quantity}";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.PutAsync(url, null);
+            if(response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Book was successfully restocked";
+                return RedirectToAction("Index", "Home");
+            }
+            TempData["error"] = response.ToString();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

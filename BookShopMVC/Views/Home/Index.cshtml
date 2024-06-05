@@ -1,6 +1,6 @@
 ﻿@{
     var userRole = "";
-    if(User.Identity.IsAuthenticated)
+    if (User.Identity.IsAuthenticated)
     {
         userRole = User.FindFirst("role").Value;
     }
@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="~/css/pagination.css" />
 
 <div class="row">
-    <div class="col-lg-2 @* col-md-3 *@">
-        <div @* class="list-group" *@>
+    <div class="col-lg-2">
+        <div>
             @foreach (var category in Model.Categories)
             {
                 <a href="@Url.Action("Index", new { categoryId = category.Id })" class="list-group-item list-group-item-action">
@@ -44,16 +44,14 @@
                                                             <a asp-controller="Book" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-warning btn-block">Update Book</a>
                                                         </div>
                                                         <div class="col-md-6 pb-6">
-                                                            <a asp-controller="Book" asp-action="Restock" asp-route-id="@obj.Id" class="btn btn-primary btn-block">Restock Book</a>
+                                                            <button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#restockModal" data-book-id="@obj.Id">Restock Book</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
                                             else
                                             {
-                                                <a asp-action="Details" asp-route-Id=@obj.Id class="btn btn-primary form-control">
-                                                    Details
-                                                </a>
+                                                <a asp-action="Details" asp-route-Id=@obj.Id class="btn btn-primary form-control">Details</a>
                                             }
                                         }
                                     </div>
@@ -69,3 +67,60 @@
         </div>
     </div>
 </div>
+
+<!-- Restock Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restockModalLabel">Restock Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="restockForm" method="post" asp-action="Restock" asp-controller="Book">
+                    <input type="hidden" id="bookId" name="bookId" />
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="100000" required />
+                        <div class="invalid-feedback">
+                            Please enter a value between 1 and 100,000.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Restock</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Ensure the correct book ID is set in the modal
+        $('#restockModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var bookId = button.data('book-id');
+            var modal = $(this);
+            modal.find('.modal-body #bookId').val(bookId);
+        });
+
+        // Client-side validation
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
+    </script>
+}
+
