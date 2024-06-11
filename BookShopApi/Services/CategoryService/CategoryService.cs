@@ -13,15 +13,6 @@ namespace BookShopApi.Services.CategoryService
             _categoryRepository = categoryRepository;
         }
 
-        public async Task Delete(int id)
-        {
-            var category = await _categoryRepository.GetById(id);
-            if (category == null)
-            {
-                throw new Exception("No category found by given id");
-            }
-            await _categoryRepository.Delete(category);
-        }
 
         public async Task<IEnumerable<CategoryGetDto>> GetAll()
         {
@@ -44,6 +35,17 @@ namespace BookShopApi.Services.CategoryService
             categoryDto.Name = categoryDto.Name.ToUpper();
             var category = categoryDto.Adapt<Category>();
             await _categoryRepository.Insert(category);
+        }
+
+        public async Task Update(int id, CategoryDto dto)
+        {
+            var category =await _categoryRepository.GetById(id);
+            if (category == null)
+            {
+                throw new Exception("No categroy found by given id");
+            }
+            category.Name=dto.Name.ToUpper();
+            await _categoryRepository.SaveChangesAsync();
         }
     }
 }

@@ -9,5 +9,6 @@ namespace BookShopApi.Repository
         Task Delete(Category category);
         Task<Category> GetById(int id);
         Task<List<Category>> GetCategoriesByBookId(int id);
+        Task SaveChangesAsync();
     }
 }

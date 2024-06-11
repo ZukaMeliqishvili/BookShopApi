@@ -41,5 +41,21 @@ namespace BookShopApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Roles ="Admin,Staff")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, CategoryDto dto)
+        {
+            try
+            {
+                await _categoryService.Update(id, dto);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+
+        }
     }
 }

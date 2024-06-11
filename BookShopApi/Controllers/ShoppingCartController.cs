@@ -8,11 +8,11 @@ namespace BookShopApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShoppingCartContoller : ControllerBase
+    public class ShoppingCartController : ControllerBase
     {
         private readonly IShoppingCartService _shoppingCartService;
 
-        public ShoppingCartContoller(IShoppingCartService shoppingCartService)
+        public ShoppingCartController(IShoppingCartService shoppingCartService)
         {
             _shoppingCartService = shoppingCartService;
         }

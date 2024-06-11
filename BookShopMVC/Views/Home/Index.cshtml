@@ -38,14 +38,12 @@
                                         @{
                                             if (userRole == "Admin" || userRole == "Staff")
                                             {
-                                                <div class="col-12 pb-1">
-                                                    <div class="row">
-                                                        <div class="col-md-6 pb-6">
-                                                            <a asp-controller="Book" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-warning btn-block">Update Book</a>
-                                                        </div>
-                                                        <div class="col-md-6 pb-6">
-                                                            <button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#restockModal" data-book-id="@obj.Id">Restock Book</button>
-                                                        </div>
+                                                <div class="col-12 pb-1 d-inline-flex">
+                                                    <div class="col-md-6 pb-6">
+                                                        <a asp-controller="Book" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-warning btn-block">Update</a>
+                                                    </div>
+                                                    <div class="col-md-6 pb-6">
+                                                        <button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#restockModal" data-book-id="@obj.Id">Restock</button>
                                                     </div>
                                                 </div>
                                             }
@@ -123,4 +121,3 @@
         })();
     </script>
 }
-

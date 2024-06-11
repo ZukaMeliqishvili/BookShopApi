@@ -10,11 +10,11 @@
 }
 <form method="post">
     <input hidden asp-for="Id" />
-    <div class="card  container pt-4">
-        <div class="card-header bg-gradient text-black ml-0  row ">
+    <div class="card container pt-4">
+        <div class="card-header bg-gradient text-black ml-0 row">
             <div class="col-12 col-md-6">
                 <h1 class="text-white">@Model.Title</h1>
-            </div> 
+            </div>
         </div>
         <div class="card-body row container">
             <div class="container rounded p-2">
@@ -22,12 +22,23 @@
                     <div class="col-8 col-lg-8">
                         <div class="row text-center pl-2" style="color:azure; width:1200px; font-weight:bold">
                             <div class="p-1 col-2 bg-secondary">
-                                <div>Amount left: @Model.AmountInStock </div>
+                                <div>In stock left: @Model.AmountInStock </div>
                             </div>
                         </div>
                         <div class="row text-center pl-2" style="color:azure; width:1200px; font-weight:bold">
                             <div class="p-1 col-2 bg-secondary">
                                 <div>Price: @currencySymbol@Model.Price.ToString("N2")</div>
+                            </div>
+                        </div>
+                        <div class="row text-center pl-2" style="color:azure; width:1200px; font-weight:bold">
+                            <div class="p-1 col-2 bg-secondary">
+                                <div>Categories:</div>
+                                <ul>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <li>@category.Name</li>
+                                    }
+                                </ul>
                             </div>
                         </div>
                         <div class="row pl-2">
@@ -47,21 +58,66 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="row">
-                           <div class="col-12 col-md-4 pb-3">
-                               <a class="btn btn-success" style="height:50px ;width:100%" asp-controller="Ticket" asp-action="Buy" asp-route-id=@Model.Id>Buy Ticket</a>
-                           </div>
-                           <div class="col-12 col-md-4 pb-3">
-                              <a class="btn btn-primary" style="height:50px ;width:100%" asp-controller="Ticket" asp-action="Book" asp-route-id=@Model.Id>Book Ticket</a>
-                           </div>
+                            <div class="col-12 col-md-4 pb-3">
+                                <button type="button" class="btn btn-success" style="height:50px ;width:100%" data-bs-toggle="modal" data-bs-target="#addToCartModal">Add to cart</button>
+                            </div>
                         </div>
                     }
                 }
-
                 <div class="col-12 col-md-12 pb-1">
-                    <a class="btn btn-danger form-control " style="height:50px;" asp-action="Index">Back to List</a>
+                    <a class="btn btn-danger form-control" style="height:50px;" asp-action="Index">Back to List</a>
                 </div>
-
             </div>
         </div>
     </div>
-</form> 
+</form>
+
+<!-- Add to Cart Modal -->
+<div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addToCartModalLabel">Add to Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addToCartForm" method="post" asp-action="AddToCart" asp-controller="Cart" asp-route-id=@Model.Id>
+                    <input type="hidden" id="bookId" name="bookId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="@Model.AmountInStock" required />
+                        <div class="invalid-feedback">
+                            Please enter a value between 1 and @Model.AmountInStock.
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $('#addToCartModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var bookId = button.data('book-id');
+            var modal = $(this);
+            modal.find('.modal-body #bookId').val(bookId);
+        });
+
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
+    </script>
+}

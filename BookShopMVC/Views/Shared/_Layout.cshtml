@@ -26,10 +26,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (roleClaims!=null && roleClaims.Value=="Admin")
+                        @if (roleClaims != null && roleClaims.Value == "Admin")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Manage Users</a>
+                            </li>
+                        }
+                        @if (roleClaims != null && (roleClaims.Value == "Admin" || roleClaims.Value == "Staff"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Create New
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" asp-action="Create" asp-controller="Book">Book</a></li>
+                                    <li><a class="dropdown-item" href="#" id="createCategoryButton" data-bs-toggle="modal" data-bs-target="#categoryModal">Category</a></li>
+                                </ul>
+                            </li>
+                        }
+                        @if(roleClaims!=null && roleClaims.Value=="User")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
                             </li>
                         }
                     </ul>
@@ -49,9 +67,17 @@
             &copy; 2024 - BookShopMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <partial name="_CreateCategoryModal" />
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="~/js/categoryModal.js"></script>
 </body>
 </html>

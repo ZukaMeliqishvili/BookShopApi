@@ -8,6 +8,6 @@ namespace BookShopApi.Services.CategoryService
         public Task insert(CategoryDto categoryDto);
         public Task<IEnumerable<CategoryGetDto>> GetAll();
         public Task<CategoryGetDto> GetById(int id);
-        public Task Delete(int id);
+        public Task Update(int id, CategoryDto dto);
     }
 }
