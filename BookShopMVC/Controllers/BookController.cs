@@ -151,6 +151,7 @@ namespace BookShopMVC.Controllers
             model.Categories = categories;
             model.Book= new BookCreateModel();
             model.Book.CategoryIds=new List<int>();
+            TempData["success"] = "The Book was successfully Added";
             return View(model);
         }
 
@@ -170,6 +171,7 @@ namespace BookShopMVC.Controllers
                 numberOfpagesErrors > 0 || priceErrors > 0 || categoryErrors > 0)
             {
                 TempData["error"] = "Book parameters are not valid";
+                return RedirectToAction("Index", "Home");
             }
             if (file == null)
             {
@@ -190,14 +192,13 @@ namespace BookShopMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "The Book successfully created";
-                return RedirectToAction("Index", "Home");
             }
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
                 TempData["error"] = $"Failed to create book: {responseContent}";
-                return RedirectToAction("Index", "Home");
             }
+            return RedirectToAction("Index", "Home");
         }
 
     }

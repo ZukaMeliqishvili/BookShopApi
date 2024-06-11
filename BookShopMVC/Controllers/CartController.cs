@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics.Contracts;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 
 namespace BookShopMVC.Controllers
 {
+    [Authorize(Roles = "User")]
     public class CartController : Controller
     {
         private readonly string _baseUrl;
@@ -17,7 +19,6 @@ namespace BookShopMVC.Controllers
             _baseUrl = configuration["ApiBaseURL:url"];
             _clientFactory = clientFactory;
         }
-        [Authorize(Roles ="User")]
         public async Task<IActionResult> Index()
         {
             var ulr = _baseUrl + "/ShoppingCart";
@@ -35,7 +36,7 @@ namespace BookShopMVC.Controllers
             cartItems = JsonConvert.DeserializeObject<List<ShoppingCartItemResponseModel>>(json);
             return View(cartItems);
         }
-        [Authorize(Roles ="User")]
+
         [HttpPost]
         public async Task<IActionResult> AddToCart(int id, int quantity)
         {
@@ -54,14 +55,54 @@ namespace BookShopMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Item has successfully added to cart";
-                return RedirectToAction("Details", "Home", new { id = id });
+               
             }
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                TempData["error"] = $"responseContent";
-                return RedirectToAction("Index", "Home");
+                TempData["error"] = $"{responseContent}";
             }
+            return RedirectToAction("Details", "Home", new { id = id });
+        }
+        
+        public async Task<IActionResult> Remove(int id)
+        {
+            var url = _baseUrl + $"/ShoppingCart/{id}";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.DeleteAsync(url);
+            if(response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "The Item has been removed from cart";
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                TempData["error"] = $"{responseContent}";
+            }
+            string currencyCode = Request.Cookies["currencyCode"] ?? "gel";
+            ViewBag.currencyCode = currencyCode;
+            return RedirectToAction("Index");
+
+        }
+        public async Task<IActionResult> RemoveAll()
+        {
+            var url = _baseUrl + "/ShoppingCart/RemoveAll";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.DeleteAsync(url);
+            if(response.IsSuccessStatusCode)
+            {
+                TempData["success"] = "Items has been removed successfully";
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                TempData["error"] = $"{responseContent}";
+            }
+            return RedirectToAction("Index");
         }
     }
 }
