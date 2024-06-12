@@ -55,6 +55,14 @@
                                 </a>
                             </li>
                         }
+                        @if(roleClaims != null && (roleClaims.Value=="Admin" || roleClaims.Value=="Staff"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Order" asp-action="ManageOrders">
+                                   Manage Orders
+                                </a>
+                            </li>
+                        }
                         @if(roleClaims!=null && roleClaims.Value=="User")
                         {
                             <li class="nav-item">

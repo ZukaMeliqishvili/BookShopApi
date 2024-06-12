@@ -6,5 +6,6 @@ namespace BookShopApi.Repository
     {
         public Task AddRange(List<Currency> currency);
         public Task<Currency> GetByCode(string code);
+        public Task<List<Currency>> GetAll();
     }
 }

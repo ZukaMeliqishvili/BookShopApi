@@ -16,9 +16,15 @@ namespace BookShopApi.Controllers
         {
             _currencyRepository = currencyRepository;
         }
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Get()
+        {
+            var currencies = await _currencyRepository.GetAll();
+            return Ok(currencies);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("fromNBG")]
+        public async Task<IActionResult> GetFromNBG()
         {
             string apiUrl = "https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json/";
             try

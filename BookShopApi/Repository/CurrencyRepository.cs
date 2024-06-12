@@ -18,6 +18,12 @@ namespace BookShopApi.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Currency>> GetAll()
+        {
+            var currencies = await _context.Currency.ToListAsync();
+            return currencies.TakeLast(2).ToList();
+        }
+
         public async Task<Currency> GetByCode(string code)
         {
             return await _context.Currency.OrderBy(x=>x.Id).LastOrDefaultAsync(x => x.Code == code);

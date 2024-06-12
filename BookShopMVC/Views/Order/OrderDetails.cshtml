@@ -1,0 +1,59 @@
+﻿@model OrderResponseModelForAdmin
+
+@{
+    string currencySymbol = Model.Currency switch
+    {
+        "usd" => "$",
+        "eur" => "€",
+        _ => "₾"
+    };
+}
+
+<div class="container mt-4">
+    <h1>Order Details</h1>
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3>Order ID: @Model.Id</h3>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5>Customer Details</h5>
+                <p><strong>Username:</strong> @Model.User.UserName</p>
+                <p><strong>First Name:</strong> @Model.User.FirstName</p>
+                <p><strong>Last Name:</strong> @Model.User.LastName</p>
+                <p><strong>Email:</strong> @Model.User.Email</p>
+                <p><strong>Phone:</strong> @Model.User.PhoneNumber</p>
+                <p><strong>Address:</strong> @Model.User.Address</p>
+            </div>
+            <div class="mb-3">
+                <h5>Order Information</h5>
+                <p><strong>Order Date:</strong> @Model.OrderDateTime.ToString("f")</p>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td><a asp-action="Details" asp-controller="Home" asp-route-id="@item.Book.Id">@item.Book.Title</a></td>
+                            <td>@item.Quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Total Price: @currencySymbol@Model.TotalPrice.ToString("N2")</h4>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="@Url.Action("ManageOrders", "Order")" class="btn btn-primary">Back to Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
