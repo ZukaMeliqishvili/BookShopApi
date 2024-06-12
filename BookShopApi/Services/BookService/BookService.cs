@@ -156,7 +156,7 @@ namespace BookShopApi.Services.BookService
             string key = $"GetBookById-{id}";
             await _cache.RemoveAsync(key + "-gel");
             await _cache.RemoveAsync(key + "-usd");
-            await _cache.RefreshAsync(key + "-eur");
+            await _cache.RemoveAsync(key + "-eur");
             await _cache.RemoveAsync("GetBooks");
         }
     }

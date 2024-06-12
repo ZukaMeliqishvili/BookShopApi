@@ -7,5 +7,6 @@
         public decimal TotalPrice { get; set; }
         public DateTime OrderDateTime { get; set; }
         public string Currency { get; set; }
+        public int Status { get; set; }
     }
 }

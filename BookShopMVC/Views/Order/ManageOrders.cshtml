@@ -9,6 +9,7 @@
                 <th scope="col">Total Price</th>
                 <th scope="col">User Name</th>
                 <th scope="col">Address</th>
+                <th scope="col">Status</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -21,12 +22,20 @@
                     "eur" => "€",
                     _ => "₾"
                 };
+                string status = item.Status switch
+                {
+                    1 => "Pending",
+                    2 => "Confirmed",
+                    3 => "Shipped",
+                    _ => "Completed"
+                };
                 <tr>
                     <td>@item.Id</td>
                     <td>@item.OrderDateTime</td>
                     <td>@currencySymbol@item.TotalPrice.ToString("N2")</td>
                     <td>@item.User.UserName</td>
                     <td>@item.User.Address</td>
+                    <td>@status</td>
                     <td>
                         <a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
                     </td>

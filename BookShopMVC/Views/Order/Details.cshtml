@@ -7,6 +7,14 @@
         "eur" => "€",
         _ => "₾"
     };
+    string status = Model.Status switch
+    {
+        1 => "Pending",
+        2 => "Confirmed",
+        3 => "Shipped",
+        _ => "Completed"
+    };
+
 }
 
 <div class="container mt-4">
@@ -17,6 +25,7 @@
         </div>
         <div class="card-body">
             <p><strong>Order Date:</strong> @Model.OrderDateTime.ToString("f")</p>
+            <p><strong>Status:</strong> @status</p>
             <table class="table">
                 <thead>
                     <tr>

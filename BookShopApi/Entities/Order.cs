@@ -1,4 +1,6 @@
-﻿namespace BookShopApi.Entities
+﻿using BookShopApi.Infrastructure;
+
+namespace BookShopApi.Entities
 {
     public class Order
     {
@@ -9,5 +11,6 @@
         public decimal TotalPrice { get; set; }
         public DateTime OrderDateTime { get; set; } = DateTime.Now;
         public string Currency { get; set; }
+        public int Status { get; set; } = (int)OrderStatuses.Pending;
     }
 }

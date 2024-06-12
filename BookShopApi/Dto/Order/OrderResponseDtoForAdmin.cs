@@ -13,5 +13,6 @@ namespace BookShopApi.Dto._Order
         public DateTime OrderDateTime { get; set; }
         public string Currency { get; set; }
         public UserResponseDto User { get; set; }
+        public int Status { get; set; }
     }
 }

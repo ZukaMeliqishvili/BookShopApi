@@ -7,6 +7,13 @@
         "eur" => "€",
         _ => "₾"
     };
+    string status = Model.Status switch
+    {
+        1 => "Pending",
+        2 => "Confirmed",
+        3 => "Shipped",
+        _ => "Completed"
+    };
 }
 
 <div class="container mt-4">
@@ -24,6 +31,7 @@
                 <p><strong>Email:</strong> @Model.User.Email</p>
                 <p><strong>Phone:</strong> @Model.User.PhoneNumber</p>
                 <p><strong>Address:</strong> @Model.User.Address</p>
+                <p><strong>@status</strong></p>
             </div>
             <div class="mb-3">
                 <h5>Order Information</h5>

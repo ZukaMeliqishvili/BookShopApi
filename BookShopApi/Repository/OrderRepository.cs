@@ -38,5 +38,10 @@ namespace BookShopApi.Repository
             return await _context.Orders.Where(x => x.UserId == userId).Include(x => x.OrderItems).ThenInclude(x => x.Book).
                  ThenInclude(x => x.Categories).ThenInclude(x => x.Category).ToListAsync();
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

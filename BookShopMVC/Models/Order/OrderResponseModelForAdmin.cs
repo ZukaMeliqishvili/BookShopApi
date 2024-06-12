@@ -10,5 +10,6 @@ namespace BookShopMVC.Models.Order
         public DateTime OrderDateTime { get; set; }
         public string Currency { get; set; }
         public UserResponseModel User { get; set; }
+        public int Status { get; set; }
     }
 }

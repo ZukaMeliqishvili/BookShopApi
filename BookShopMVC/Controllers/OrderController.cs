@@ -26,13 +26,15 @@ namespace BookShopMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "The order was made successfully";
+                return RedirectToAction("Index");
             }
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
                 TempData["error"] = responseContent;
+                return RedirectToAction("Index", "Cart");
             }
-            return RedirectToAction("Index");
+
         }
         [Authorize(Roles ="User")]
         public async Task<IActionResult> Index()

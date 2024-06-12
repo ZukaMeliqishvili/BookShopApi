@@ -11,5 +11,6 @@ namespace BookShopApi.Services._Order
         Task MakeOrder(int userId, string currency);
         Task<OrderResponseDto> GetOrder(int id, int userId);
         Task<OrderResponseDtoForAdmin> GetOrder(int id);
+        Task ProceedOrder(int id);
     }
 }

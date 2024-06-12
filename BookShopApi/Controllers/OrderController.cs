@@ -85,5 +85,24 @@ namespace BookShopApi.Controllers
                 return NotFound();
             }
         }
+        [Authorize(Roles ="Admin,Staff")]
+        [HttpPut("ChangeStatus/{id}")]
+        public async Task<IActionResult> ChangeOrderStatus(int id)
+        {
+            try
+            {
+                await _orderService.ProceedOrder(id);
+                return Ok();
+            }
+            catch(NullReferenceException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

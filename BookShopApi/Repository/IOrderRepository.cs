@@ -9,5 +9,6 @@ namespace BookShopApi.Repository
         Task<Order> GetById(int id);
         Task<Order> GetById(int id, int userId);
         Task<IEnumerable<Order>> GetUserOrders(int userId);
+        Task SaveChangesAsync();
     }
 }
