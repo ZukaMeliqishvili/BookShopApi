@@ -34,7 +34,7 @@ namespace BookShopApi.Services._Order
             var cartItems = await _shoppingCartRepository.GetAll(userId);
             if (cartItems == null || cartItems.Count==0) 
             {
-                throw new Exception("There is no items in the cart to makea an order");
+                throw new Exception("There is no items in the cart to make an order");
             }
             Order order = new Order()
             {

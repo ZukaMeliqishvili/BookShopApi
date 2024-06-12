@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics.Contracts;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
 
 namespace BookShopMVC.Controllers
