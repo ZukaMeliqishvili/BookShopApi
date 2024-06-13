@@ -21,7 +21,7 @@ namespace BookShopApi.Infrastructure.FluentValidations
                 .NotNull()
                 .NotEmpty()
                 .MinimumLength(8)
-                .MaximumLength(100)
+                .MaximumLength(250)
                 .Matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
             RuleFor(x => x.PhoneNumber)
                 .NotNull()
@@ -42,7 +42,7 @@ namespace BookShopApi.Infrastructure.FluentValidations
                 .NotNull()
                 .NotEmpty()
                 .MinimumLength(8)
-                .MaximumLength(25)
+                .MaximumLength(250)
                 .Matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$");
             RuleFor(x => x.PhoneNumber)
                 .NotNull()

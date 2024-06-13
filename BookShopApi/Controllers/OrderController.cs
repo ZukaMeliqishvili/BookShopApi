@@ -16,15 +16,6 @@ namespace BookShopApi.Controllers
             _orderService = orderService;
         }
 
-        protected string GetCurrencyCodeFromCookies()
-        {
-            string currencyCode = Request.Cookies["currencyCode"];
-            if (String.IsNullOrEmpty(currencyCode))
-            {
-                currencyCode = "gel";
-            }
-            return currencyCode;
-        }
         protected virtual string GetUserId()
         {
             return HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -44,12 +35,12 @@ namespace BookShopApi.Controllers
             return Ok(await _orderService.GetOrders());
         }
         [Authorize(Roles = "User")]
-        [HttpPost]
-        public async Task<IActionResult> MakeOrder()
+        [HttpPost("{currencyCode}")]
+        public async Task<IActionResult> MakeOrder(string currencyCode)
         {
             try
             {
-                await _orderService.MakeOrder(int.Parse(GetUserId()), GetCurrencyCodeFromCookies());
+                await _orderService.MakeOrder(int.Parse(GetUserId()), currencyCode);
                 return Ok();
             }
             catch (Exception ex)

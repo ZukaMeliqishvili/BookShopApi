@@ -1,3 +1,4 @@
+using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -21,10 +22,11 @@ namespace BookShopMVC
          options.LoginPath = "/User/Login";
          options.AccessDeniedPath = "/User/AccessDenied";
      });
+            builder.Services.AddScoped<ICurrencyInitializer, CurrencyInitializer>();
 
 
             var app = builder.Build();
-
+            SeedCurrencies.Seed(app);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

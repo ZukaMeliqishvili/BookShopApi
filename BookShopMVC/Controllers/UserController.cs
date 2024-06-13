@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -138,6 +137,58 @@ namespace BookShopMVC.Controllers
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Update()
+        {
+            var url = baseUrl + "/User/UserInfo";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.GetAsync(url);
+            if(!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                TempData["error"] = responseContent;
+            }
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserResponseModel>(jsonString);
+            return View(user);
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Update(UserResponseModel user)
+        {
+            int emailErrors = ModelState["Email"].Errors.Count;
+            int phoneNumberErrors = ModelState["PhoneNumber"].Errors.Count;
+            int addressErrors = ModelState["Address"].Errors.Count;
+
+            if (emailErrors > 0 || phoneNumberErrors>0 || addressErrors >0)
+            {
+                TempData["error"] = "Please enter valid info";
+                return RedirectToAction("Update", "User");
+            }
+            UserUpdateModel model = new UserUpdateModel()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+            };
+            var url = baseUrl + "/User";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await client.PutAsync(url, content);
+            if(!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                TempData["error"] = responseContent;
+            }
+            else
+            {
+                TempData["success"] = "Contact information has been updated successfully";
+            }
+            return RedirectToAction("Update", "User");
         }
     }
 }

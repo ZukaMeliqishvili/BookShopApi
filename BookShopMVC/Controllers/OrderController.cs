@@ -18,7 +18,12 @@ namespace BookShopMVC.Controllers
         [Authorize(Roles = "User")]
         public async Task<IActionResult> MakeOrder()
         {
-            var url = _baseUrl + "/Order";
+            var currencyCode = Request.Cookies["CurrencyCode"];
+            if (currencyCode == null)
+            {
+                currencyCode = "gel";
+            }
+            var url = _baseUrl + $"/Order/{currencyCode}";
             var jwtToken = Request.Cookies["JwtToken"];
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
