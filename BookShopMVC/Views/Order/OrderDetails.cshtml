@@ -60,6 +60,10 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="@Url.Action("ManageOrders", "Order")" class="btn btn-primary">Back to Orders</a>
+                    @if(Model.Status!=4)
+                    {
+                        <a href="@Url.Action("ChangeStatus", "Order", new { id = Model.Id })" class="btn btn-success">Proceed Order</a>
+                    }
                 </div>
             </div>
         </div>

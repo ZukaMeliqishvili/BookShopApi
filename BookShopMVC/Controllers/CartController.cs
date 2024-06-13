@@ -1,4 +1,5 @@
 ﻿using BookShopMVC.Models.Cart;
+using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -32,13 +33,24 @@ namespace BookShopMVC.Controllers
             var json = await  response.Content.ReadAsStringAsync();
             List<ShoppingCartItemResponseModel> cartItems = new List<ShoppingCartItemResponseModel>();
             cartItems = JsonConvert.DeserializeObject<List<ShoppingCartItemResponseModel>>(json);
+            var currencyCode = Request.Cookies["CurrencyCode"];
+            ViewBag.CurrencyCode = currencyCode;
+            if (currencyCode == "gel" || String.IsNullOrEmpty(currencyCode))
+            {
+                ViewBag.CurrencyRate = 1;
+            }
+            else
+            {
+                var rate = CurrencyRates.Currencies.LastOrDefault(x => x.Code == currencyCode).Rate;
+                ViewBag.CurrencyRate = rate;
+            }
             return View(cartItems);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddToCart(int id, int quantity)
         {
-            if(quantity < 0)
+            if (quantity < 0)
             {
                 TempData["error"] = "Please choose right quantity";
                 return RedirectToAction("Idex");
@@ -53,13 +65,14 @@ namespace BookShopMVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Item has successfully added to cart";
-               
+
             }
             else
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
                 TempData["error"] = $"{responseContent}";
             }
+
             return RedirectToAction("Details", "Home", new { id = id });
         }
         

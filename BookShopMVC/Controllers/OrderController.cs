@@ -15,14 +15,14 @@ namespace BookShopMVC.Controllers
             _baseUrl = configuration["ApiBaseURL:url"];
             _clientFactory = clientFactory;
         }
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> MakeOrder()
         {
             var url = _baseUrl + "/Order";
             var jwtToken = Request.Cookies["JwtToken"];
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-            var response = await client.PostAsync(url,null);
+            var response = await client.PostAsync(url, null);
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "The order was made successfully";
@@ -36,7 +36,7 @@ namespace BookShopMVC.Controllers
             }
 
         }
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
             var url = _baseUrl + "/Order";
@@ -44,11 +44,11 @@ namespace BookShopMVC.Controllers
             var client = _clientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
             var response = await client.GetAsync(url);
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
                 TempData["error"] = responseContent;
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             List<OrderResponseModel> orders = new List<OrderResponseModel>();
             var responseJson = await response.Content.ReadAsStringAsync();
@@ -74,7 +74,7 @@ namespace BookShopMVC.Controllers
             return View(order);
         }
 
-        [Authorize(Roles ="Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> ManageOrders()
         {
             var url = _baseUrl + "/Order/Admin";
@@ -110,6 +110,26 @@ namespace BookShopMVC.Controllers
             var responseJson = await response.Content.ReadAsStringAsync();
             var orders = JsonConvert.DeserializeObject<OrderResponseModelForAdmin>(responseJson);
             return View(orders);
+        }
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> ChangeStatus(int id)
+        {
+            var url = _baseUrl + $"/Order/ChangeStatus/{id}";
+            var jwtToken = Request.Cookies["JwtToken"];
+            var client = _clientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.PutAsync(url, null);
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                TempData["error"] = responseContent;
+                
+            }
+            else
+            {
+                TempData["success"] = "Order status has been updated Successfully";
+            }
+            return RedirectToAction("ManageOrders");
         }
     }
 }
