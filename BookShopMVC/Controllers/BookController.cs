@@ -151,7 +151,6 @@ namespace BookShopMVC.Controllers
             model.Categories = categories;
             model.Book= new BookCreateModel();
             model.Book.CategoryIds=new List<int>();
-            TempData["success"] = "The Book was successfully Added";
             return View(model);
         }
 
